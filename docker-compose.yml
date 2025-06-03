@@ -1,0 +1,8 @@
+
+services:
+  compilador:
+    build: .
+    volumes:
+      - .:/app  # Sincroniza el directorio actual con /app en el contenedor
+    tty: true   # Permite interactividad (consola)
+    stdin_open: true

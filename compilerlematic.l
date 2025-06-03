@@ -1,69 +1,67 @@
-/** Seccion de definiciones **/
+/** Def section **/
 %{
 #include "compilersintactic.tab.h"
 extern int yylineno;
 %}
 
-/** Seccion de reglas **/
+/** These are the language rules **/
 identificador 	[a-z][a-zA-Z0-9]{0,10}
 entero        	-?[0-9]{0,10}  
 float 			-?[0-9]+\.[0-9]+
 string      	\'[^\']*\' 
 
 %%
-"labuena"   		{return TRUE;}
-"lamala"    		{return FALSE;}
-"start"      		{return VARS; }
-"startI"			{return VARI;}
-"startF"			{return VARF;}
-"startB"			{return VARB;}
-"dele"				{return CDO;}
-"vamo"				{return CWHILE;}
-"aTerminar"  		{return FWHILE;}
-"paLante"			{return CFOR;}
-"aTerminal"  		{return FFOR;}
-"vamoSi"			{return CIF;}
-"aTerminarpues" 	{return FIF;}
-"siNoVamos" 		{return CEL;}
-"hagalePues" 		{return FUN;}
-"tome"				{return RET;}
-"trueque"			{return STH;}
-"incidente"			{return CASE;}
-"rompido"			{return BRK;}
-"efecto"			{return DUT;}
-"pruebe"			{return TRY;}
-"pille"				{return CATCH;}
-{identificador}   	{yylval.strval = strdup(yytext); return IFR; }
-{entero}      		{yylval.intval = atoi(yytext);return INT;}
-{float}				{yylval.floatval = atof(yytext);return FLT;}
-{string}			{yylval.strval = strdup(yytext);return STG; }
-=					{return ASIG; }
-== 					{return IGU;}
-"!="				{return DIF;}
-"<"					{return MEQ;}
-">"					{return MAQ;}
-"<="				{return MEIQ;}
-">="				{return MAIQ;}
-\&\&				{return AND;}
-\!					{return NEG;}
-\|\|				{return OR;}
-\+					{return MAS;}
-\~					{return MEN;}
-\*					{return MUL;}
-\/					{return DIV;}
-\%					{return MOD;}
-\(					{return APT;}
-\)					{return CPT;}
-\{					{return ACH;}
-\}					{return CCH;}
-\:					{return TWP;}
-\,					{return COMA;}
-\$  				{return ENDVAR; }
-[\n]				{yylineno++;}
-[ \t]       		{/* Ignorar espacios */}
-.             		{printf("Error lexico token desconocido: ' %s ' en la linea: %i\n", yytext, yylineno);}
+"fact"          {return TRUE;}
+"fake"         {return FALSE;}
+"ent"           {return INT;}
+"bin"       {return BOOLEAN;}
+"dec"         {return DEC;}
+"word"        {return STR;}
+"fi"            {return TIF;}
+"fin"        {return EIF;}
+"other"          {return ELSE;}
+"make"      {return DWHILE;}
+"loop"         {return WHILE;}
+"end-loop"     {return EWHILE;}
+"range"           {return FOR;}
+"done"       {return EFOR;} //end-for
+"res"        {return RET;} //return
+"funct"      {return FUNCTION;} //function
+"hctiw"        {return SWTC;} //switch
+"esac"          {return ESAC;} //case
+"jump"         {return KAERB;} //break
+"def"       {return DEF;}
+"yrt"           {return YRT;} //try
+"hctac"         {return HCTAC;} //catch
+"++"            {return PLUS;}
+"--"            {return MINUS;}
+"@"             {return MULT;}
+"/"             {return DIV;}
+"%"             {return MOD;}
+"="             {return ASSIGN;}
+"=="            {return EQ;}
+"!="            {return DIFF;}
+"!"             {return NOT;}
+"<"             {return LT;}
+">"             {return GT;}
+"<="            {return LEQ;}
+">="            {return GEQ;}
+"&&"            {return AND;}
+"||"            {return OR;}
+"("             {return LPAREN;}
+")"             {return RPAREN;}
+"{"             {return LBRACE;}
+"}"             {return RBRACE;}
+"*"             {return COL;}
+{identificador} {yylval.strval = strdup(yytext); return IFR; }
+{entero}        {yylval.intval = atoi(yytext);return INT;}
+{float}         {yylval.floatval = atof(yytext);return DEC;}
+{string}        {yylval.strval = strdup(yytext);return STR;}
+[\n]            {yylineno++;}
+[ \t]           {/* Ignorar espacios */}
+.               {printf("Error lexico token desconocido: ' %s ' en la linea: %i\n", yytext, yylineno);}
 %%
-/** Seccion de codigo de usuario **/
+/** User code section **/
 int yywrap (){
-	return 1;
+    return 1;
 }
