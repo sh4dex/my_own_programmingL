@@ -33,9 +33,17 @@ string      	\'[^\']*\'
 "def"       {return DEF;}
 "yrt"           {return YRT;} //try
 "hctac"         {return HCTAC;} //catch
-"++"            {return PLUS;}
-"--"            {return MINUS;}
+"sum"   {return SUM;}
+"prod"  {return PROD;}
+"max"   {return MAX;}
+"min"   {return MIN;}
+"["             {return LBRACKET;}
+"]"             {return RBRACKET;}
+"+"            {return PLUS;}
+"-"            {return MINUS;}
 "@"             {return MULT;}
+"++"            {return INCR;}
+"--"            {return DECR;}
 "/"             {return DIV;}
 "%"             {return MOD;}
 "="             {return ASSIGN;}

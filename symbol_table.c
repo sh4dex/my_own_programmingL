@@ -98,3 +98,95 @@ void setBooleanValue(char *name, int value) {
         printf("Error: Incorrect type assignment for '%s'. Line: %i.\n", name, yylineno);
     }
 }
+
+void newVectorToTable(char *name, DataType type, int size) {
+    if (symbolCount >= MAXIMUN_TOKKENS_NUM) return;
+    symbolTable[symbolCount].name = strdup(name);
+    symbolTable[symbolCount].type = type;
+    symbolTable[symbolCount].size1 = size;
+    symbolTable[symbolCount].size2 = 0;
+    switch (type) {
+        case VEC_INT: symbolTable[symbolCount].value.vecInt = calloc(size, sizeof(int)); break;
+        case VEC_FL: symbolTable[symbolCount].value.vecFloat = calloc(size, sizeof(float)); break;
+        case VEC_ST: symbolTable[symbolCount].value.vecString = calloc(size, sizeof(char*)); break;
+        case VEC_BO: symbolTable[symbolCount].value.vecBool = calloc(size, sizeof(int)); break;
+        default: break;
+    }
+    symbolCount++;
+}
+
+void newMatrixToTable(char *name, DataType type, int rows, int cols) {
+    if (symbolCount >= MAXIMUN_TOKKENS_NUM) return;
+    symbolTable[symbolCount].name = strdup(name);
+    symbolTable[symbolCount].type = type;
+    symbolTable[symbolCount].size1 = rows;
+    symbolTable[symbolCount].size2 = cols;
+    int i;
+    switch (type) {
+        case MAT_INT:
+            symbolTable[symbolCount].value.matInt = calloc(rows, sizeof(int*));
+            for (i = 0; i < rows; ++i)
+                symbolTable[symbolCount].value.matInt[i] = calloc(cols, sizeof(int));
+            break;
+        case MAT_FL:
+            symbolTable[symbolCount].value.matFloat = calloc(rows, sizeof(float*));
+            for (i = 0; i < rows; ++i)
+                symbolTable[symbolCount].value.matFloat[i] = calloc(cols, sizeof(float));
+            break;
+        // Similar para MAT_ST y MAT_BO...
+        default: break;
+    }
+    symbolCount++;
+}
+
+int sumVectorInt(char *name) {
+    for (int i = 0; i < symbolCount; ++i) {
+        if (strcmp(symbolTable[i].name, name) == 0 && symbolTable[i].type == VEC_INT) {
+            int sum = 0;
+            for (int j = 0; j < symbolTable[i].size1; ++j)
+                sum += symbolTable[i].value.vecInt[j];
+            return sum;
+        }
+    }
+    printf("Error: Vector '%s' not found or not int type.\n", name);
+    return 0;
+}
+
+int prodVectorInt(char *name) {
+    for (int i = 0; i < symbolCount; ++i) {
+        if (strcmp(symbolTable[i].name, name) == 0 && symbolTable[i].type == VEC_INT) {
+            int prod = 1;
+            for (int j = 0; j < symbolTable[i].size1; ++j)
+                prod *= symbolTable[i].value.vecInt[j];
+            return prod;
+        }
+    }
+    printf("Error: Vector '%s' not found or not int type.\n", name);
+    return 0;
+}
+int maxVectorInt(char *name) {
+    for (int i = 0; i < symbolCount; ++i) {
+        if (strcmp(symbolTable[i].name, name) == 0 && symbolTable[i].type == VEC_INT) {
+            int max = symbolTable[i].value.vecInt[0];
+            for (int j = 1; j < symbolTable[i].size1; ++j)
+                if (symbolTable[i].value.vecInt[j] > max)
+                    max = symbolTable[i].value.vecInt[j];
+            return max;
+        }
+    }
+    printf("Error: Vector '%s' not found or not int type.\n", name);
+    return 0;
+}
+int minVectorInt(char *name) {
+    for (int i = 0; i < symbolCount; ++i) {
+        if (strcmp(symbolTable[i].name, name) == 0 && symbolTable[i].type == VEC_INT) {
+            int min = symbolTable[i].value.vecInt[0];
+            for (int j = 1; j < symbolTable[i].size1; ++j)
+                if (symbolTable[i].value.vecInt[j] < min)
+                    min = symbolTable[i].value.vecInt[j];
+            return min;
+        }
+    }
+    printf("Error: Vector '%s' not found or not int type.\n", name);
+    return 0;
+}

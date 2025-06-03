@@ -1,4 +1,7 @@
+%start program
+
 /*** DEFINITIONS SECTION ***/
+
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,10 +25,14 @@ void yyerror(char *s);
 %token <intval> INT
 %token <floatval> DEC
 %token <strval> STR
+%type <intval> reduction
 %token <strval> IFR
+%token LBRACKET RBRACKET
 %token BOOLEAN
 %token TRUE FALSE
 %token TIF EIF ELSE DWHILE WHILE EWHILE FOR EFOR RET FUNCTION SWTC ESAC KAERB DEF YRT HCTAC
+%token SUM PROD MAX MIN
+%token INCR DECR
 %token PLUS MINUS MULT DIV MOD ASSIGN EQ DIFF NOT LT GT LEQ GEQ AND OR LPAREN RPAREN LBRACE RBRACE COL
 
 %left PLUS MINUS
@@ -37,7 +44,19 @@ void yyerror(char *s);
 %%
 
 program:
-      statement_list
+    statement_list
+;
+
+
+reduction:
+      SUM LPAREN IFR RPAREN { $$ = sumVectorInt($3); }
+    | PROD LPAREN IFR RPAREN { $$ = prodVectorInt($3); }
+    | MAX LPAREN IFR RPAREN { $$ = maxVectorInt($3); }
+    | MIN LPAREN IFR RPAREN { $$ = minVectorInt($3); }
+    | SUM LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* suma fila/columna de matriz */ }
+    | PROD LPAREN IFR LBRACKET INT RBRACKET RPAREN  { /* producto fila/columna de matriz */ }
+    | MAX LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* máximo fila/columna de matriz */ }
+    | MIN LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* mínimo fila/columna de matriz */ }
     ;
 
 statement_list:
@@ -62,6 +81,7 @@ value:
       STR
     | INT
     | DEC
+    | reduction
     ;
 
 boolean:
@@ -74,6 +94,16 @@ declaration:
     | INT IFR COL {newSymbolToTable($2, IN);}
     | DEC IFR COL {newSymbolToTable($2, FL);}
     | BOOLEAN IFR COL {newSymbolToTable($2, BO);}
+    /* Vector (1D array) */
+    | STR IFR LBRACKET INT RBRACKET COL { /* TODO: add 1D string array to symbol table */ }
+    | INT IFR LBRACKET INT RBRACKET COL { /* TODO: add 1D int array to symbol table */ }
+    | DEC IFR LBRACKET INT RBRACKET COL { /* TODO: add 1D float array to symbol table */ }
+    | BOOLEAN IFR LBRACKET INT RBRACKET COL { /* TODO: add 1D bool array to symbol table */ }
+    /* Matrix (2D array) */
+    | STR IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* TODO: add 2D string matrix to symbol table */ }
+    | INT IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* TODO: add 2D int matrix to symbol table */ }
+    | DEC IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* TODO: add 2D float matrix to symbol table */ }
+    | BOOLEAN IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* TODO: add 2D bool matrix to symbol table */ }
     ;
 
 initialization:

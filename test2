@@ -1,0 +1,44 @@
+ent edad*
+dec promedio*
+word nombre*
+bin activo*
+edad = 25*
+promedio = 8.5*
+nombre = 'Thomas'*
+activo = fact*
+ent numeros[5]*
+dec matriz[3][3]*
+bin flags[4]*
+word palabras[2]*
+
+fi (edad > 18) {
+    res 'Mayor de edad'*
+} fin
+
+fi (activo == fact) {
+    res 'Usuario activo'*
+} fin other {
+    res 'Usuario inactivo'*
+}
+
+make {
+    edad = edad + 1*
+} loop (edad < 30) {
+    edad = edad + 1*
+} end-loop
+
+range (ent i = 0* i < 5* i++) {
+    numeros[i] = i*
+} done
+
+range (ent i = 0* i < 3* i++) {
+    range (ent j = 0* j < 3* j++) {
+        matriz[i][j] = i * j*
+    } done
+} done
+
+funct saludar(word nombre) {
+    res 'Hola '*
+} 
+
+saludar('Thomas')*
