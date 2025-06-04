@@ -1,0 +1,9 @@
+funct factorial(ent n) {
+    fi (n <= 1) {
+        res 1*
+    } fin other {
+        res n * factorial(n - 1)*
+    }
+}
+ent resultado*
+resultado = factorial(5)*

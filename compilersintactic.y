@@ -1,7 +1,5 @@
 %start program
 
-/*** DEFINITIONS SECTION ***/
-
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,14 +19,13 @@ void yyerror(char *s);
     int boolval;
 }
 
-/* Tokens for your lexer */
 %token <intval> INT
 %token <floatval> DEC
 %token <strval> STR
-%type <intval> reduction
 %token <strval> IFR
 %token LBRACKET RBRACKET
 %token BOOLEAN
+%token MAKE LOOP ENDLOOP
 %token TRUE FALSE
 %token TIF EIF ELSE DWHILE WHILE EWHILE FOR EFOR RET FUNCTION SWTC ESAC KAERB DEF YRT HCTAC
 %token SUM PROD MAX MIN
@@ -38,8 +35,9 @@ void yyerror(char *s);
 %left PLUS MINUS
 %left MULT DIV MOD
 
-%type <intval> operation_int_exp operation_int
-%type <floatval> operation_float_exp operation_float
+%type <intval> operation_int
+%type <floatval> operation_float
+%type <intval> reduction
 
 %%
 
@@ -47,27 +45,16 @@ program:
     statement_list
 ;
 
-
-reduction:
-      SUM LPAREN IFR RPAREN { $$ = sumVectorInt($3); }
-    | PROD LPAREN IFR RPAREN { $$ = prodVectorInt($3); }
-    | MAX LPAREN IFR RPAREN { $$ = maxVectorInt($3); }
-    | MIN LPAREN IFR RPAREN { $$ = minVectorInt($3); }
-    | SUM LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* suma fila/columna de matriz */ }
-    | PROD LPAREN IFR LBRACKET INT RBRACKET RPAREN  { /* producto fila/columna de matriz */ }
-    | MAX LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* máximo fila/columna de matriz */ }
-    | MIN LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* mínimo fila/columna de matriz */ }
-    ;
-
 statement_list:
-      statement
-    | statement_list statement
+      /* vacío */
+    | statement statement_list
     ;
 
 statement:
       declaration
     | initialization
     | asignation
+    | whileloop
     | if
     | while
     | do_while
@@ -94,16 +81,14 @@ declaration:
     | INT IFR COL {newSymbolToTable($2, IN);}
     | DEC IFR COL {newSymbolToTable($2, FL);}
     | BOOLEAN IFR COL {newSymbolToTable($2, BO);}
-    /* Vector (1D array) */
-    | STR IFR LBRACKET INT RBRACKET COL { /* TODO: add 1D string array to symbol table */ }
-    | INT IFR LBRACKET INT RBRACKET COL { /* TODO: add 1D int array to symbol table */ }
-    | DEC IFR LBRACKET INT RBRACKET COL { /* TODO: add 1D float array to symbol table */ }
-    | BOOLEAN IFR LBRACKET INT RBRACKET COL { /* TODO: add 1D bool array to symbol table */ }
-    /* Matrix (2D array) */
-    | STR IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* TODO: add 2D string matrix to symbol table */ }
-    | INT IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* TODO: add 2D int matrix to symbol table */ }
-    | DEC IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* TODO: add 2D float matrix to symbol table */ }
-    | BOOLEAN IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* TODO: add 2D bool matrix to symbol table */ }
+    | STR IFR LBRACKET INT RBRACKET COL { /* vector string */ }
+    | INT IFR LBRACKET INT RBRACKET COL { /* vector int */ }
+    | DEC IFR LBRACKET INT RBRACKET COL { /* vector float */ }
+    | BOOLEAN IFR LBRACKET INT RBRACKET COL { /* vector bool */ }
+    | STR IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* matriz string */ }
+    | INT IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* matriz int */ }
+    | DEC IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* matriz float */ }
+    | BOOLEAN IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* matriz bool */ }
     ;
 
 initialization:
@@ -127,65 +112,46 @@ asignation:
     ;
 
 operation_int:
-      operation_int_exp
-    | operation_int PLUS INT { $$ = $1 + $3; }
-    | operation_int MINUS INT { $$ = $1 - $3; }
-    | operation_int MULT INT { $$ = $1 * $3; }
-    | operation_int DIV INT {
-        if ($3 == 0) {
-            yyerror("División por cero");
-            $$ = 0;
-        } else {
-            $$ = $1 / $3;
-        }
+      operation_int PLUS operation_int   { $$ = $1 + $3; }
+    | operation_int MINUS operation_int  { $$ = $1 - $3; }
+    | operation_int MULT operation_int   { $$ = $1 * $3; }
+    | operation_int DIV operation_int    { $$ = ($3 == 0) ? (yyerror("División por cero"), 0) : $1 / $3; }
+    | operation_int MOD operation_int    { $$ = $1 % $3; }
+    | LPAREN operation_int RPAREN        { $$ = $2; }
+    | INT                                { $$ = $1; }
+    | IFR { 
+        DataType t; 
+        int *val = getVal($1, &t); 
+        if (val && t == IN) $$ = *val; 
+        else { yyerror("Variable entera no declarada o tipo incorrecto"); $$ = 0; }
       }
-    | operation_int MOD INT { $$ = $1 % $3; }
-    ;
-
-operation_int_exp:
-      INT PLUS INT { $$ = $1 + $3; }
-    | INT MINUS INT { $$ = $1 - $3; }
-    | INT MULT INT { $$ = $1 * $3; }
-    | INT DIV INT {
-        if ($3 == 0) {
-            yyerror("División por cero");
-            $$ = 0;
-        } else {
-            $$ = $1 / $3;
-        }
-      }
-    | INT MOD INT { $$ = $1 % $3; }
     ;
 
 operation_float:
-      operation_float_exp
-    | operation_float PLUS DEC { $$ = $1 + $3; }
-    | operation_float MINUS DEC { $$ = $1 - $3; }
-    | operation_float MULT DEC { $$ = $1 * $3; }
-    | operation_float DIV DEC {
-        if ($3 == 0) {
-            yyerror("División por cero");
-            $$ = 0;
-        } else {
-            $$ = $1 / $3;
-        }
+      operation_float PLUS operation_float   { $$ = $1 + $3; }
+    | operation_float MINUS operation_float  { $$ = $1 - $3; }
+    | operation_float MULT operation_float   { $$ = $1 * $3; }
+    | operation_float DIV operation_float    { $$ = ($3 == 0) ? (yyerror("División por cero"), 0) : $1 / $3; }
+    | operation_float MOD operation_float    { $$ = (int)$1 % (int)$3; }
+    | LPAREN operation_float RPAREN         { $$ = $2; }
+    | DEC                                   { $$ = $1; }
+    | IFR { 
+        DataType t; 
+        float *val = getVal($1, &t); 
+        if (val && t == FL) $$ = *val; 
+        else { yyerror("Variable decimal no declarada o tipo incorrecto"); $$ = 0; }
       }
-    | operation_float MOD DEC { $$ = (int)$1 % (int)$3; }
     ;
 
-operation_float_exp:
-      DEC PLUS DEC { $$ = $1 + $3; }
-    | DEC MINUS DEC { $$ = $1 - $3; }
-    | DEC MULT DEC { $$ = $1 * $3; }
-    | DEC DIV DEC {
-        if ($3 == 0) {
-            yyerror("División por cero");
-            $$ = 0;
-        } else {
-            $$ = $1 / $3;
-        }
-      }
-    | DEC MOD DEC { $$ = (int)$1 % (int)$3; }
+reduction:
+      SUM LPAREN IFR RPAREN { $$ = sumVectorInt($3); }
+    | PROD LPAREN IFR RPAREN { $$ = prodVectorInt($3); }
+    | MAX LPAREN IFR RPAREN { $$ = maxVectorInt($3); }
+    | MIN LPAREN IFR RPAREN { $$ = minVectorInt($3); }
+    | SUM LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* suma fila/columna de matriz */ }
+    | PROD LPAREN IFR LBRACKET INT RBRACKET RPAREN  { /* producto fila/columna de matriz */ }
+    | MAX LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* máximo fila/columna de matriz */ }
+    | MIN LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* mínimo fila/columna de matriz */ }
     ;
 
 condition:
@@ -225,25 +191,33 @@ ifcondition:
     ;
 
 body:
-      LBRACE bodies RBRACE
+       LBRACE { enterScope(); }
+      bodies
+      RBRACE { exitScope(); }
     ;
 
 bodies:
-      body_stmt bodies
-    | body_stmt
+      /* vacío */
+    | body_stmt bodies
     ;
+
+whileloop:
+    DWHILE body WHILE LPAREN condition RPAREN body EWHILE
+;
 
 body_stmt:
       RET value COL
     | KAERB COL
     | if
     | while
+    | whileloop
     | do_while
     | for
     | switch
     | try_catch
     | function
     | initialization
+    | asignation
     ;
 
 elsebody:

@@ -1,6 +1,8 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 #define MAXIMUN_TOKKENS_NUM 500
+#define MAX_SCOPES 100
+#define MAX_SYMBOLS_PER_SCOPE 100
 
 typedef enum { IN, FL, ST, BO, FN, VEC_INT, VEC_FL, VEC_ST, VEC_BO, MAT_INT, MAT_FL, MAT_ST, MAT_BO } DataType;
 
@@ -26,9 +28,19 @@ typedef struct {
     } value;
 } Symbol;
 
+typedef struct {
+    Symbol symbols[MAX_SYMBOLS_PER_SCOPE];
+    int count;
+} Scope;
+
+extern Scope scopes[MAX_SCOPES];
+extern int currentScope;
+
 extern Symbol symbolTable[MAXIMUN_TOKKENS_NUM];
 extern int symbolCount;
 
+void enterScope();
+void exitScope();
 void newSymbolToTable(char *name, DataType type);
 void *getVal(char *name, DataType *type);
 void setintValue(char *name, int value);

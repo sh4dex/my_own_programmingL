@@ -58,45 +58,56 @@ extern int yydebug;
     DEC = 259,                     /* DEC  */
     STR = 260,                     /* STR  */
     IFR = 261,                     /* IFR  */
-    BOOLEAN = 262,                 /* BOOLEAN  */
-    TRUE = 263,                    /* TRUE  */
-    FALSE = 264,                   /* FALSE  */
-    TIF = 265,                     /* TIF  */
-    EIF = 266,                     /* EIF  */
-    ELSE = 267,                    /* ELSE  */
-    DWHILE = 268,                  /* DWHILE  */
-    WHILE = 269,                   /* WHILE  */
-    EWHILE = 270,                  /* EWHILE  */
-    FOR = 271,                     /* FOR  */
-    EFOR = 272,                    /* EFOR  */
-    RET = 273,                     /* RET  */
-    FUNCTION = 274,                /* FUNCTION  */
-    SWTC = 275,                    /* SWTC  */
-    ESAC = 276,                    /* ESAC  */
-    KAERB = 277,                   /* KAERB  */
-    DEF = 278,                     /* DEF  */
-    YRT = 279,                     /* YRT  */
-    HCTAC = 280,                   /* HCTAC  */
-    PLUS = 281,                    /* PLUS  */
-    MINUS = 282,                   /* MINUS  */
-    MULT = 283,                    /* MULT  */
-    DIV = 284,                     /* DIV  */
-    MOD = 285,                     /* MOD  */
-    ASSIGN = 286,                  /* ASSIGN  */
-    EQ = 287,                      /* EQ  */
-    DIFF = 288,                    /* DIFF  */
-    NOT = 289,                     /* NOT  */
-    LT = 290,                      /* LT  */
-    GT = 291,                      /* GT  */
-    LEQ = 292,                     /* LEQ  */
-    GEQ = 293,                     /* GEQ  */
-    AND = 294,                     /* AND  */
-    OR = 295,                      /* OR  */
-    LPAREN = 296,                  /* LPAREN  */
-    RPAREN = 297,                  /* RPAREN  */
-    LBRACE = 298,                  /* LBRACE  */
-    RBRACE = 299,                  /* RBRACE  */
-    COL = 300                      /* COL  */
+    LBRACKET = 262,                /* LBRACKET  */
+    RBRACKET = 263,                /* RBRACKET  */
+    BOOLEAN = 264,                 /* BOOLEAN  */
+    MAKE = 265,                    /* MAKE  */
+    LOOP = 266,                    /* LOOP  */
+    ENDLOOP = 267,                 /* ENDLOOP  */
+    TRUE = 268,                    /* TRUE  */
+    FALSE = 269,                   /* FALSE  */
+    TIF = 270,                     /* TIF  */
+    EIF = 271,                     /* EIF  */
+    ELSE = 272,                    /* ELSE  */
+    DWHILE = 273,                  /* DWHILE  */
+    WHILE = 274,                   /* WHILE  */
+    EWHILE = 275,                  /* EWHILE  */
+    FOR = 276,                     /* FOR  */
+    EFOR = 277,                    /* EFOR  */
+    RET = 278,                     /* RET  */
+    FUNCTION = 279,                /* FUNCTION  */
+    SWTC = 280,                    /* SWTC  */
+    ESAC = 281,                    /* ESAC  */
+    KAERB = 282,                   /* KAERB  */
+    DEF = 283,                     /* DEF  */
+    YRT = 284,                     /* YRT  */
+    HCTAC = 285,                   /* HCTAC  */
+    SUM = 286,                     /* SUM  */
+    PROD = 287,                    /* PROD  */
+    MAX = 288,                     /* MAX  */
+    MIN = 289,                     /* MIN  */
+    INCR = 290,                    /* INCR  */
+    DECR = 291,                    /* DECR  */
+    PLUS = 292,                    /* PLUS  */
+    MINUS = 293,                   /* MINUS  */
+    MULT = 294,                    /* MULT  */
+    DIV = 295,                     /* DIV  */
+    MOD = 296,                     /* MOD  */
+    ASSIGN = 297,                  /* ASSIGN  */
+    EQ = 298,                      /* EQ  */
+    DIFF = 299,                    /* DIFF  */
+    NOT = 300,                     /* NOT  */
+    LT = 301,                      /* LT  */
+    GT = 302,                      /* GT  */
+    LEQ = 303,                     /* LEQ  */
+    GEQ = 304,                     /* GEQ  */
+    AND = 305,                     /* AND  */
+    OR = 306,                      /* OR  */
+    LPAREN = 307,                  /* LPAREN  */
+    RPAREN = 308,                  /* RPAREN  */
+    LBRACE = 309,                  /* LBRACE  */
+    RBRACE = 310,                  /* RBRACE  */
+    COL = 311                      /* COL  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -105,14 +116,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 138 "compilersintactic.y"
+#line 15 "compilersintactic.y"
 
     int intval;
     float floatval;
     char *strval;
     int boolval;
 
-#line 116 "compilersintactic.tab.h"
+#line 127 "compilersintactic.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -1,0 +1,13 @@
+ent x*
+x = 10*
+{
+    ent x*
+    x = 20*
+    {
+        ent x*
+        x = 30*
+        res x* // 30
+    }
+    res x* // 20
+}
+res x* // 10

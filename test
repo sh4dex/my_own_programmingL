@@ -1,2 +1,97 @@
-word pene*
-ent unagono*
+ent x*
+dec y*
+bin flag*
+word nombre*
+ent v[5]*
+dec m[2][3]*
+
+x = 10*
+y = 3.14*
+flag = fact*
+nombre = 'Ana'*
+
+x = x + 5 * 2 - 3 / 1*
+
+ent suma*
+ent maximo*
+suma = sum(v)*
+maximo = max(v)*
+
+dec sumaFila*
+sumaFila = sum(m[1])*
+
+ent z*
+z = 1*
+if (z == 1) {
+    ent z*
+    z = 99*
+    ret z*
+}
+ret z*
+
+while (x < 20) {
+    x = x + 1*
+}
+
+make {
+    y = y + 1*
+} loop (y < 10) {
+    y = y + 2*
+} end-loop
+
+for (ent i = 0* i < 3* i++) {
+    x = x + i*
+}
+
+function factorial(ent n) {
+    if (n <= 1) {
+        ret 1*
+    }
+    else {
+        ret n * factorial(n - 1)*
+    }
+}
+ent resultado*
+resultado = factorial(5)*
+
+function suma(ent a, ent b) {
+    ret a + b*
+}
+function suma(dec a, dec b) {
+    ret a + b*
+}
+ent r1*
+dec r2*
+r1 = suma(2, 3)*
+r2 = suma(2.5, 3.5)*
+
+yrt {
+    ent w*
+    w = 1 / 0*
+} hctac {
+    ret 'Error: división por cero'*
+}
+
+assert(x > 0)*
+
+ent a*
+a = 'cadena'* // Error de tipo
+
+b = 5* // Error: variable no declarada
+
+ent c*
+c = 1 + * 2 // Error de sintaxis
+
+ent s*
+s = 10*
+{
+    ent s*
+    s = 20*
+    {
+        ent s*
+        s = 30*
+        ret s*
+    }
+    ret s*
+}
+ret s*

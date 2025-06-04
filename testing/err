@@ -1,0 +1,7 @@
+ent a*
+a = 'cadena'* // Error de tipo
+
+b = 5* // Error: variable no declarada
+
+ent c*
+c = 1 + * 2 // Error de sintaxis
