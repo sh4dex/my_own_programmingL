@@ -33,12 +33,29 @@
 ---
 
 ## ⚙️ Compilación y ejecución
+El proyecto ya se encuentra compilado, pero si ejecutas el script `./test` como binario, **se compilará de nuevo automáticamente** y ejecutará el compilador sobre el archivo de pruebas.
 
-El proyecto ya se encuentra compilado, pero si ejecutas el script `./test` como binario, se compilará de nuevo automáticamente y ejecutará el compilador sobre el archivo de pruebas.
+---
 
-### Mostrar contenido del comando `test`
+### 📜 ¿Qué hace el script `test`?
 
-El archivo `test` contiene:
+> **No es necesario compilar de nuevo el proyecto manualmente**, ya que el archivo binario `compiler` está incluido en el volumen del contenedor.  
+> Si deseas probar el compilador directamente, puedes ejecutar:
+>
+> ```sh
+> ./compiler test.txt
+> ```
+>
+> Esto compilará el archivo de prueba escrito en nuestro lenguaje.
+
+Si necesitas recompilar o ejecutar todo el flujo, simplemente ejecuta el script `test`.  
+**Recuerda primero dar permisos de ejecución:**
+
+```sh
+chmod +x test
+```
+
+#### El archivo `test` contiene:
 
 ```sh
 #!/bin/bash
@@ -49,6 +66,29 @@ gcc compilersintactic_clean.tab.c lex.yy.c symbol_table.c -lfl -o compiler
 ./compiler test.txt
 ```
 
+---
+
+### ⚠️ Problemas comunes: saltos de línea de Windows
+
+Si al ejecutar el compilador ves errores como:
+
+```
+Error: carácter no reconocido ''' al final de la línea X
+Error: carácter no reconocido '^M' al final de la línea
+```
+
+Esto ocurre porque tu archivo (`test.txt` u otro) tiene saltos de línea de Windows (`\r\n`) y el sistema Linux espera saltos de línea tipo Unix (`\n`).  
+¡No te preocupes, somos de la UPTC! Ya hemos previsto esto y el contenedor incluye la herramienta `dos2unix`.
+
+#### **Solución rápida:**
+
+Convierte tu archivo a formato Unix ejecutando:
+
+```sh
+dos2unix test.txt
+```
+
+¡Y listo! Ahora tu archivo funcionará correctamente en el entorno Linux del contenedor. So EZ for Us
 ---
 
 ## 📝 Explicación del funcionamiento del proyecto
