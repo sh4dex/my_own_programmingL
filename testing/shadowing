@@ -1,8 +1,0 @@
-ent x*
-x = 1*
-fi (x == 1) {
-    ent x* // shadowing
-    x = 99*
-    res x*
-} fin
-res x* // Debe imprimir 1, no 99

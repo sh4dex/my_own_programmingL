@@ -1,0 +1,138 @@
+
+//testing
+
+word variable1*
+ent enteroUno*
+dec flotante*
+bin boleanoD1*
+variable1 = 'adios'*
+flotante = 8.7*
+word cadena = 'hola'*
+dec matriz[9][1]*
+dec vec[4]*
+ent numero = 836741*
+dec float = 91.243*
+
+funct beta () {
+	loop (1 == 0) { loop(3==3){res 6*} end-loop } end-loop
+	make {
+		fi (3 >= 1 || !(2 <= 0)) { res 2* } fin
+		fi (5 == 7 && !(4 != 1)) { res 3* } fin other { jump* }
+	} loop (7 == 3 || 5 < 9) { 
+		loop(3!=2){
+			fi (fake) { res 4* } fin
+			res 7*
+		} end-loop 
+	} end-loop
+	res 1*
+}
+
+
+//comentario que no tiene nada que ver 
+
+fi (6 >= 9 || !(8 <= 3)) { res 5* } fin
+fi (7 == 4 && !(5 != 2)) { res 1* } fin other { jump* }
+fi (8 > 0) { 
+	fi (2 < 6) { 
+		res 1*
+		res 9*
+	} fin other { res 3* }
+} fin other { 
+		res 7*
+}
+
+fi (fake) { res 6* } fin
+
+loop (2 == 1 && 4 < 7) { loop(7==5){res 8*} end-loop } end-loop
+
+loop (3 == 8 || 6 < 4) { 
+	loop(9!=1){
+		fi (fake) { res 7* } fin
+		res 4*
+	} end-loop 
+} end-loop
+
+make {
+	fi (5 >= 3 || !(7 <= 6)) { res 2* } fin
+	fi (6 == 1 && !(4 != 3)) { res 1* } fin other { jump* }
+} loop (2 == 3 || 1 < 5) { 
+	loop(2!=3){
+		fi (fake) { res 6* } fin
+		res 9*
+	} end-loop 
+} end-loop
+
+range(ent i = 3* i < 6* i++*) {
+	range(ent j = 9* j > 4* j--*) {
+		loop (6 == 2 || 8 < 3) { 
+			loop(1!=0){
+				fi (fake) { res 5* } fin
+				res 3*
+			} end-loop 
+		} end-loop
+	} done
+} done
+
+hctiw (i){
+	esac 5: {
+		hctiw (j){
+			esac 3:{
+				res 7*
+			}
+			jump*
+		}
+	}
+	jump*
+}
+
+hctiw (i){
+	esac 8: {
+		hctiw (j){
+			esac 4:{
+				loop (7 == 9 && 2 < 1) { loop(1==1){res 6*} end-loop } end-loop
+			}
+			jump*
+		}
+	}
+	jump*
+}
+
+yrt {
+	yrt{
+		res 3*
+	} hctac(ex){
+		res 7*
+	}
+	
+} hctac(error){
+	fi (7 >= 2 || !(3 <= 1)) { res 4* } fin	
+	loop (6 == 8 && 1 < 3) { loop(3==3){res 2*} end-loop } end-loop
+}
+
+funct alfa (i){
+	yrt {
+        yrt{
+           hctiw (i){
+			esac 1: {
+				hctiw (j){
+					esac 2:{
+						loop (9 == 4 && 1 < 2) { loop(5==5){res 5*} end-loop } end-loop
+					}
+					jump*
+				}
+			}
+			jump*
+			}
+        } hctac(ex){
+           res 2*
+        }
+		yrt{
+           res 3*
+        } hctac(ex){
+           res 4*
+        }
+	} hctac(error){
+        fi (6 >= 1 || !(2 <= 7)) { res 2* } fin   
+	}
+}
+

@@ -1,0 +1,4386 @@
+State 304 conflicts: 5 shift/reduce
+State 305 conflicts: 5 shift/reduce
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: declaration
+    2        | initialization
+    3        | asignation
+    4        | if
+    5        | while
+    6        | do-while
+    7        | for
+    8        | switch
+    9        | try-catch
+   10        | function
+   11        | program declaration
+   12        | program initialization
+   13        | program asignation
+   14        | program if
+   15        | program while
+   16        | program do-while
+   17        | program for
+   18        | program switch
+   19        | program try-catch
+   20        | program function
+
+   21 value: DIG
+   22      | FLT
+   23      | reduction
+   24      | element
+   25      | LPAREN value RPAREN
+   26      | value PLUS value
+   27      | value MINUS value
+   28      | value MULT value
+   29      | value DIV value
+   30      | value MOD value
+
+   31 element: IFR LBRACKET DIG RBRACKET
+   32        | IFR LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET
+
+   33 reduction: SUM LPAREN IFR RPAREN
+   34          | PROD LPAREN IFR RPAREN
+   35          | MAX LPAREN IFR RPAREN
+   36          | MIN LPAREN IFR RPAREN
+   37          | SUM LPAREN IFR LBRACKET DIG RBRACKET RPAREN
+   38          | PROD LPAREN IFR LBRACKET DIG RBRACKET RPAREN
+   39          | MAX LPAREN IFR LBRACKET DIG RBRACKET RPAREN
+   40          | MIN LPAREN IFR LBRACKET DIG RBRACKET RPAREN
+
+   41 boolean: TRUE
+   42        | FALSE
+
+   43 declaration: STR IFR COL
+   44            | INT IFR COL
+   45            | DEC IFR COL
+   46            | BOOLEAN IFR COL
+   47            | DEC IFR LBRACKET DIG RBRACKET COL
+   48            | DEC IFR LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET COL
+
+   49 initialization: STR IFR ASSIGN STG COL
+   50               | INT IFR ASSIGN DIG COL
+   51               | DEC IFR ASSIGN FLT COL
+   52               | BOOLEAN IFR ASSIGN TRUE COL
+   53               | BOOLEAN IFR ASSIGN FALSE COL
+   54               | INT IFR ASSIGN operation_int COL
+   55               | DEC IFR ASSIGN operation_float COL
+
+   56 asignation: IFR ASSIGN STG COL
+   57           | IFR ASSIGN element COL
+   58           | IFR ASSIGN DIG COL
+   59           | IFR ASSIGN FLT COL
+   60           | IFR ASSIGN TRUE COL
+   61           | IFR ASSIGN FALSE COL
+   62           | IFR ASSIGN operation_int COL
+   63           | IFR ASSIGN operation_float COL
+
+   64 asignation_function: IFR ASSIGN value
+   65                    | IFR ASSIGN boolean
+   66                    | IFR ASSIGN operation_int_exp
+   67                    | IFR ASSIGN operation_float_exp
+
+   68 operation_int: operation_int_exp
+   69              | operation_int operation_int_exp
+   70              | operation_int PLUS DIG
+   71              | operation_int MINUS DIG
+   72              | operation_int MULT DIG
+   73              | operation_int DIV DIG
+
+   74 operation_int_exp: DIG PLUS DIG
+   75                  | DIG MINUS DIG
+   76                  | DIG MULT DIG
+   77                  | DIG MOD DIG
+   78                  | DIG DIV DIG
+   79                  | DIG DIG PLUS
+   80                  | DIG DIG MINUS
+   81                  | DIG DIG MULT
+   82                  | DIG DIG MOD
+   83                  | DIG DIG DIV
+
+   84 operation_float: operation_float_exp
+   85                | operation_float operation_float_exp
+   86                | operation_float PLUS FLT
+   87                | operation_float MINUS FLT
+   88                | operation_float MULT FLT
+   89                | operation_float DIV FLT
+
+   90 operation_float_exp: FLT PLUS FLT
+   91                    | FLT MINUS FLT
+   92                    | FLT MULT FLT
+   93                    | FLT DIV FLT
+   94                    | FLT MOD FLT
+   95                    | FLT FLT PLUS
+   96                    | FLT FLT MINUS
+   97                    | FLT FLT MULT
+   98                    | FLT FLT MOD
+   99                    | FLT FLT DIV
+
+  100 condition: value EQ value
+  101          | boolean EQ boolean
+  102          | value DIFF value
+  103          | boolean DIFF boolean
+  104          | value LT value
+  105          | value GT value
+  106          | value LEQ value
+  107          | value GEQ value
+  108          | IFR EQ value
+  109          | IFR EQ IFR
+  110          | IFR LT value
+  111          | IFR GT value
+  112          | IFR LEQ value
+  113          | IFR GEQ value
+  114          | IFR LT IFR
+  115          | IFR GT IFR
+  116          | IFR LEQ IFR
+  117          | IFR GEQ IFR
+
+  118 conditioncomp: condition AND condition
+  119              | condition OR condition
+  120              | NOT LPAREN condition RPAREN AND condition
+  121              | condition AND NOT LPAREN condition RPAREN
+  122              | NOT LPAREN condition RPAREN OR condition
+  123              | condition OR NOT LPAREN condition RPAREN
+
+  124 ifcondition: LPAREN condition RPAREN
+  125            | LPAREN conditioncomp RPAREN
+  126            | LPAREN boolean RPAREN
+
+  127 body: LBRACE bodies RBRACE
+
+  128 bodies: body_stmt bodies
+  129       | body_stmt
+
+  130 body_stmt: RET value COL
+  131          | KAERB COL
+  132          | if
+  133          | while
+  134          | do-while
+  135          | for
+  136          | switch
+  137          | try-catch
+  138          | function
+  139          | initialization
+
+  140 elsebody: LBRACE RET value COL RBRACE
+  141         | LBRACE KAERB COL RBRACE
+
+  142 if: TIF ifcondition body EIF
+  143   | TIF ifcondition body EIF ELSE elsebody
+
+  144 whilecondition: LPAREN condition RPAREN
+  145               | LPAREN conditioncomp RPAREN
+  146               | LPAREN boolean RPAREN
+
+  147 while: WHILE whilecondition body EWHILE
+
+  148 do-while: DWHILE body while
+
+  149 for: FOR LPAREN INT IFR ASSIGN DIG COL condition COL for_asignation COL RPAREN body EFOR
+  150    | FOR LPAREN DEC IFR ASSIGN FLT COL condition COL asignation RPAREN LBRACE body RBRACE EFOR
+
+  151 for_asignation: IFR PLUS PLUS
+  152               | IFR MINUS MINUS
+
+  153 switch: SWTC LPAREN IFR RPAREN LBRACE cases RBRACE
+
+  154 cases: case
+  155      | cases case
+
+  156 case: ESAC value COLON body KAERB COL
+  157     | DEF COLON body COL
+
+  158 try-catch: YRT body HCTAC LPAREN IFR RPAREN body
+
+  159 function: FUNCTION IFR LPAREN parameters RPAREN body
+  160         | FUNCTION IFR LPAREN RPAREN body
+
+  161 parameters: IFR
+  162           | asignation_function
+  163           | parameters COMMA IFR
+  164           | parameters COMMA asignation_function
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    error (256)
+    DIG <intval> (258) 21 31 32 37 38 39 40 47 48 50 58 70 71 72 73 74 75 76 77 78 79 80 81 82 83 149
+    IFR <strval> (259) 31 32 33 34 35 36 37 38 39 40 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 108 109 110 111 112 113 114 115 116 117 149 150 151 152 153 158 159 160 161 163
+    STG <strval> (260) 49 56
+    FLT <floatval> (261) 22 51 59 86 87 88 89 90 91 92 93 94 95 96 97 98 99 150
+    PLUS (262) 26 70 74 79 86 90 95 151
+    MINUS (263) 27 71 75 80 87 91 96 152
+    LBRACKET (264) 31 32 37 38 39 40 47 48
+    RBRACKET (265) 31 32 37 38 39 40 47 48
+    SUM (266) 33 37
+    PROD (267) 34 38
+    MAX (268) 35 39
+    MIN (269) 36 40
+    MULT (270) 28 72 76 81 88 92 97
+    DIV (271) 29 73 78 83 89 93 99
+    TRUE (272) 41 52 60
+    FALSE (273) 42 53 61
+    STR (274) 43 49
+    INT (275) 44 50 54 149
+    DEC (276) 45 47 48 51 55 150
+    BOOLEAN (277) 46 52 53
+    DWHILE (278) 148
+    WHILE (279) 147
+    EWHILE (280) 147
+    FOR (281) 149 150
+    EFOR (282) 149 150
+    TIF (283) 142 143
+    EIF (284) 142 143
+    ELSE (285) 143
+    FUNCTION (286) 159 160
+    RET (287) 130 140
+    SWTC (288) 153
+    ESAC (289) 156
+    KAERB (290) 131 141 156
+    DEF (291) 157
+    YRT (292) 158
+    HCTAC (293) 158
+    ASSIGN (294) 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 149 150
+    EQ (295) 100 101 108 109
+    DIFF (296) 102 103
+    LT (297) 104 110 114
+    GT (298) 105 111 115
+    LEQ (299) 106 112 116
+    GEQ (300) 107 113 117
+    AND (301) 118 120 121
+    NOT (302) 120 121 122 123
+    OR (303) 119 122 123
+    MOD (304) 30 77 82 94 98
+    LPAREN (305) 25 33 34 35 36 37 38 39 40 120 121 122 123 124 125 126 144 145 146 149 150 153 158 159 160
+    RPAREN (306) 25 33 34 35 36 37 38 39 40 120 121 122 123 124 125 126 144 145 146 149 150 153 158 159 160
+    LBRACE (307) 127 140 141 150 153
+    RBRACE (308) 127 140 141 150 153
+    COL (309) 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 130 131 140 141 149 150 156 157
+    COLON (310) 156 157
+    COMMA (311) 163 164
+
+
+Nonterminals, with rules where they appear
+
+    $accept (57)
+        on left: 0
+    program (58)
+        on left: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+        on right: 0 11 12 13 14 15 16 17 18 19 20
+    value <floatval> (59)
+        on left: 21 22 23 24 25 26 27 28 29 30
+        on right: 25 26 27 28 29 30 64 100 102 104 105 106 107 108 110 111 112 113 130 140 156
+    element <floatval> (60)
+        on left: 31 32
+        on right: 24 57
+    reduction <floatval> (61)
+        on left: 33 34 35 36 37 38 39 40
+        on right: 23
+    boolean (62)
+        on left: 41 42
+        on right: 65 101 103 126 146
+    declaration (63)
+        on left: 43 44 45 46 47 48
+        on right: 1 11
+    initialization (64)
+        on left: 49 50 51 52 53 54 55
+        on right: 2 12 139
+    asignation (65)
+        on left: 56 57 58 59 60 61 62 63
+        on right: 3 13 150
+    asignation_function (66)
+        on left: 64 65 66 67
+        on right: 162 164
+    operation_int <intval> (67)
+        on left: 68 69 70 71 72 73
+        on right: 54 62 69 70 71 72 73
+    operation_int_exp <intval> (68)
+        on left: 74 75 76 77 78 79 80 81 82 83
+        on right: 66 68 69
+    operation_float <floatval> (69)
+        on left: 84 85 86 87 88 89
+        on right: 55 63 85 86 87 88 89
+    operation_float_exp <floatval> (70)
+        on left: 90 91 92 93 94 95 96 97 98 99
+        on right: 67 84 85
+    condition (71)
+        on left: 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117
+        on right: 118 119 120 121 122 123 124 144 149 150
+    conditioncomp (72)
+        on left: 118 119 120 121 122 123
+        on right: 125 145
+    ifcondition (73)
+        on left: 124 125 126
+        on right: 142 143
+    body (74)
+        on left: 127
+        on right: 142 143 147 148 149 150 156 157 158 159 160
+    bodies (75)
+        on left: 128 129
+        on right: 127 128
+    body_stmt (76)
+        on left: 130 131 132 133 134 135 136 137 138 139
+        on right: 128 129
+    elsebody (77)
+        on left: 140 141
+        on right: 143
+    if (78)
+        on left: 142 143
+        on right: 4 14 132
+    whilecondition (79)
+        on left: 144 145 146
+        on right: 147
+    while (80)
+        on left: 147
+        on right: 5 15 133 148
+    do-while (81)
+        on left: 148
+        on right: 6 16 134
+    for (82)
+        on left: 149 150
+        on right: 7 17 135
+    for_asignation (83)
+        on left: 151 152
+        on right: 149
+    switch (84)
+        on left: 153
+        on right: 8 18 136
+    cases (85)
+        on left: 154 155
+        on right: 153 155
+    case (86)
+        on left: 156 157
+        on right: 154 155
+    try-catch (87)
+        on left: 158
+        on right: 9 19 137
+    function (88)
+        on left: 159 160
+        on right: 10 20 138
+    parameters (89)
+        on left: 161 162 163 164
+        on right: 159 163 164
+
+
+State 0
+
+    0 $accept: . program $end
+
+    IFR       shift, and go to state 1
+    STR       shift, and go to state 2
+    INT       shift, and go to state 3
+    DEC       shift, and go to state 4
+    BOOLEAN   shift, and go to state 5
+    DWHILE    shift, and go to state 6
+    WHILE     shift, and go to state 7
+    FOR       shift, and go to state 8
+    TIF       shift, and go to state 9
+    FUNCTION  shift, and go to state 10
+    SWTC      shift, and go to state 11
+    YRT       shift, and go to state 12
+
+    program         go to state 13
+    declaration     go to state 14
+    initialization  go to state 15
+    asignation      go to state 16
+    if              go to state 17
+    while           go to state 18
+    do-while        go to state 19
+    for             go to state 20
+    switch          go to state 21
+    try-catch       go to state 22
+    function        go to state 23
+
+
+State 1
+
+   56 asignation: IFR . ASSIGN STG COL
+   57           | IFR . ASSIGN element COL
+   58           | IFR . ASSIGN DIG COL
+   59           | IFR . ASSIGN FLT COL
+   60           | IFR . ASSIGN TRUE COL
+   61           | IFR . ASSIGN FALSE COL
+   62           | IFR . ASSIGN operation_int COL
+   63           | IFR . ASSIGN operation_float COL
+
+    ASSIGN  shift, and go to state 24
+
+
+State 2
+
+   43 declaration: STR . IFR COL
+   49 initialization: STR . IFR ASSIGN STG COL
+
+    IFR  shift, and go to state 25
+
+
+State 3
+
+   44 declaration: INT . IFR COL
+   50 initialization: INT . IFR ASSIGN DIG COL
+   54               | INT . IFR ASSIGN operation_int COL
+
+    IFR  shift, and go to state 26
+
+
+State 4
+
+   45 declaration: DEC . IFR COL
+   47            | DEC . IFR LBRACKET DIG RBRACKET COL
+   48            | DEC . IFR LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET COL
+   51 initialization: DEC . IFR ASSIGN FLT COL
+   55               | DEC . IFR ASSIGN operation_float COL
+
+    IFR  shift, and go to state 27
+
+
+State 5
+
+   46 declaration: BOOLEAN . IFR COL
+   52 initialization: BOOLEAN . IFR ASSIGN TRUE COL
+   53               | BOOLEAN . IFR ASSIGN FALSE COL
+
+    IFR  shift, and go to state 28
+
+
+State 6
+
+  148 do-while: DWHILE . body while
+
+    LBRACE  shift, and go to state 29
+
+    body  go to state 30
+
+
+State 7
+
+  147 while: WHILE . whilecondition body EWHILE
+
+    LPAREN  shift, and go to state 31
+
+    whilecondition  go to state 32
+
+
+State 8
+
+  149 for: FOR . LPAREN INT IFR ASSIGN DIG COL condition COL for_asignation COL RPAREN body EFOR
+  150    | FOR . LPAREN DEC IFR ASSIGN FLT COL condition COL asignation RPAREN LBRACE body RBRACE EFOR
+
+    LPAREN  shift, and go to state 33
+
+
+State 9
+
+  142 if: TIF . ifcondition body EIF
+  143   | TIF . ifcondition body EIF ELSE elsebody
+
+    LPAREN  shift, and go to state 34
+
+    ifcondition  go to state 35
+
+
+State 10
+
+  159 function: FUNCTION . IFR LPAREN parameters RPAREN body
+  160         | FUNCTION . IFR LPAREN RPAREN body
+
+    IFR  shift, and go to state 36
+
+
+State 11
+
+  153 switch: SWTC . LPAREN IFR RPAREN LBRACE cases RBRACE
+
+    LPAREN  shift, and go to state 37
+
+
+State 12
+
+  158 try-catch: YRT . body HCTAC LPAREN IFR RPAREN body
+
+    LBRACE  shift, and go to state 29
+
+    body  go to state 38
+
+
+State 13
+
+    0 $accept: program . $end
+   11 program: program . declaration
+   12        | program . initialization
+   13        | program . asignation
+   14        | program . if
+   15        | program . while
+   16        | program . do-while
+   17        | program . for
+   18        | program . switch
+   19        | program . try-catch
+   20        | program . function
+
+    $end      shift, and go to state 39
+    IFR       shift, and go to state 1
+    STR       shift, and go to state 2
+    INT       shift, and go to state 3
+    DEC       shift, and go to state 4
+    BOOLEAN   shift, and go to state 5
+    DWHILE    shift, and go to state 6
+    WHILE     shift, and go to state 7
+    FOR       shift, and go to state 8
+    TIF       shift, and go to state 9
+    FUNCTION  shift, and go to state 10
+    SWTC      shift, and go to state 11
+    YRT       shift, and go to state 12
+
+    declaration     go to state 40
+    initialization  go to state 41
+    asignation      go to state 42
+    if              go to state 43
+    while           go to state 44
+    do-while        go to state 45
+    for             go to state 46
+    switch          go to state 47
+    try-catch       go to state 48
+    function        go to state 49
+
+
+State 14
+
+    1 program: declaration .
+
+    $default  reduce using rule 1 (program)
+
+
+State 15
+
+    2 program: initialization .
+
+    $default  reduce using rule 2 (program)
+
+
+State 16
+
+    3 program: asignation .
+
+    $default  reduce using rule 3 (program)
+
+
+State 17
+
+    4 program: if .
+
+    $default  reduce using rule 4 (program)
+
+
+State 18
+
+    5 program: while .
+
+    $default  reduce using rule 5 (program)
+
+
+State 19
+
+    6 program: do-while .
+
+    $default  reduce using rule 6 (program)
+
+
+State 20
+
+    7 program: for .
+
+    $default  reduce using rule 7 (program)
+
+
+State 21
+
+    8 program: switch .
+
+    $default  reduce using rule 8 (program)
+
+
+State 22
+
+    9 program: try-catch .
+
+    $default  reduce using rule 9 (program)
+
+
+State 23
+
+   10 program: function .
+
+    $default  reduce using rule 10 (program)
+
+
+State 24
+
+   56 asignation: IFR ASSIGN . STG COL
+   57           | IFR ASSIGN . element COL
+   58           | IFR ASSIGN . DIG COL
+   59           | IFR ASSIGN . FLT COL
+   60           | IFR ASSIGN . TRUE COL
+   61           | IFR ASSIGN . FALSE COL
+   62           | IFR ASSIGN . operation_int COL
+   63           | IFR ASSIGN . operation_float COL
+
+    DIG    shift, and go to state 50
+    IFR    shift, and go to state 51
+    STG    shift, and go to state 52
+    FLT    shift, and go to state 53
+    TRUE   shift, and go to state 54
+    FALSE  shift, and go to state 55
+
+    element              go to state 56
+    operation_int        go to state 57
+    operation_int_exp    go to state 58
+    operation_float      go to state 59
+    operation_float_exp  go to state 60
+
+
+State 25
+
+   43 declaration: STR IFR . COL
+   49 initialization: STR IFR . ASSIGN STG COL
+
+    ASSIGN  shift, and go to state 61
+    COL     shift, and go to state 62
+
+
+State 26
+
+   44 declaration: INT IFR . COL
+   50 initialization: INT IFR . ASSIGN DIG COL
+   54               | INT IFR . ASSIGN operation_int COL
+
+    ASSIGN  shift, and go to state 63
+    COL     shift, and go to state 64
+
+
+State 27
+
+   45 declaration: DEC IFR . COL
+   47            | DEC IFR . LBRACKET DIG RBRACKET COL
+   48            | DEC IFR . LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET COL
+   51 initialization: DEC IFR . ASSIGN FLT COL
+   55               | DEC IFR . ASSIGN operation_float COL
+
+    LBRACKET  shift, and go to state 65
+    ASSIGN    shift, and go to state 66
+    COL       shift, and go to state 67
+
+
+State 28
+
+   46 declaration: BOOLEAN IFR . COL
+   52 initialization: BOOLEAN IFR . ASSIGN TRUE COL
+   53               | BOOLEAN IFR . ASSIGN FALSE COL
+
+    ASSIGN  shift, and go to state 68
+    COL     shift, and go to state 69
+
+
+State 29
+
+  127 body: LBRACE . bodies RBRACE
+
+    STR       shift, and go to state 70
+    INT       shift, and go to state 71
+    DEC       shift, and go to state 72
+    BOOLEAN   shift, and go to state 73
+    DWHILE    shift, and go to state 6
+    WHILE     shift, and go to state 7
+    FOR       shift, and go to state 8
+    TIF       shift, and go to state 9
+    FUNCTION  shift, and go to state 10
+    RET       shift, and go to state 74
+    SWTC      shift, and go to state 11
+    KAERB     shift, and go to state 75
+    YRT       shift, and go to state 12
+
+    initialization  go to state 76
+    bodies          go to state 77
+    body_stmt       go to state 78
+    if              go to state 79
+    while           go to state 80
+    do-while        go to state 81
+    for             go to state 82
+    switch          go to state 83
+    try-catch       go to state 84
+    function        go to state 85
+
+
+State 30
+
+  148 do-while: DWHILE body . while
+
+    WHILE  shift, and go to state 7
+
+    while  go to state 86
+
+
+State 31
+
+  144 whilecondition: LPAREN . condition RPAREN
+  145               | LPAREN . conditioncomp RPAREN
+  146               | LPAREN . boolean RPAREN
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 88
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    NOT     shift, and go to state 96
+    LPAREN  shift, and go to state 97
+
+    value          go to state 98
+    element        go to state 99
+    reduction      go to state 100
+    boolean        go to state 101
+    condition      go to state 102
+    conditioncomp  go to state 103
+
+
+State 32
+
+  147 while: WHILE whilecondition . body EWHILE
+
+    LBRACE  shift, and go to state 29
+
+    body  go to state 104
+
+
+State 33
+
+  149 for: FOR LPAREN . INT IFR ASSIGN DIG COL condition COL for_asignation COL RPAREN body EFOR
+  150    | FOR LPAREN . DEC IFR ASSIGN FLT COL condition COL asignation RPAREN LBRACE body RBRACE EFOR
+
+    INT  shift, and go to state 105
+    DEC  shift, and go to state 106
+
+
+State 34
+
+  124 ifcondition: LPAREN . condition RPAREN
+  125            | LPAREN . conditioncomp RPAREN
+  126            | LPAREN . boolean RPAREN
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 88
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    NOT     shift, and go to state 96
+    LPAREN  shift, and go to state 97
+
+    value          go to state 98
+    element        go to state 99
+    reduction      go to state 100
+    boolean        go to state 107
+    condition      go to state 108
+    conditioncomp  go to state 109
+
+
+State 35
+
+  142 if: TIF ifcondition . body EIF
+  143   | TIF ifcondition . body EIF ELSE elsebody
+
+    LBRACE  shift, and go to state 29
+
+    body  go to state 110
+
+
+State 36
+
+  159 function: FUNCTION IFR . LPAREN parameters RPAREN body
+  160         | FUNCTION IFR . LPAREN RPAREN body
+
+    LPAREN  shift, and go to state 111
+
+
+State 37
+
+  153 switch: SWTC LPAREN . IFR RPAREN LBRACE cases RBRACE
+
+    IFR  shift, and go to state 112
+
+
+State 38
+
+  158 try-catch: YRT body . HCTAC LPAREN IFR RPAREN body
+
+    HCTAC  shift, and go to state 113
+
+
+State 39
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 40
+
+   11 program: program declaration .
+
+    $default  reduce using rule 11 (program)
+
+
+State 41
+
+   12 program: program initialization .
+
+    $default  reduce using rule 12 (program)
+
+
+State 42
+
+   13 program: program asignation .
+
+    $default  reduce using rule 13 (program)
+
+
+State 43
+
+   14 program: program if .
+
+    $default  reduce using rule 14 (program)
+
+
+State 44
+
+   15 program: program while .
+
+    $default  reduce using rule 15 (program)
+
+
+State 45
+
+   16 program: program do-while .
+
+    $default  reduce using rule 16 (program)
+
+
+State 46
+
+   17 program: program for .
+
+    $default  reduce using rule 17 (program)
+
+
+State 47
+
+   18 program: program switch .
+
+    $default  reduce using rule 18 (program)
+
+
+State 48
+
+   19 program: program try-catch .
+
+    $default  reduce using rule 19 (program)
+
+
+State 49
+
+   20 program: program function .
+
+    $default  reduce using rule 20 (program)
+
+
+State 50
+
+   58 asignation: IFR ASSIGN DIG . COL
+   74 operation_int_exp: DIG . PLUS DIG
+   75                  | DIG . MINUS DIG
+   76                  | DIG . MULT DIG
+   77                  | DIG . MOD DIG
+   78                  | DIG . DIV DIG
+   79                  | DIG . DIG PLUS
+   80                  | DIG . DIG MINUS
+   81                  | DIG . DIG MULT
+   82                  | DIG . DIG MOD
+   83                  | DIG . DIG DIV
+
+    DIG    shift, and go to state 114
+    PLUS   shift, and go to state 115
+    MINUS  shift, and go to state 116
+    MULT   shift, and go to state 117
+    DIV    shift, and go to state 118
+    MOD    shift, and go to state 119
+    COL    shift, and go to state 120
+
+
+State 51
+
+   31 element: IFR . LBRACKET DIG RBRACKET
+   32        | IFR . LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET
+
+    LBRACKET  shift, and go to state 121
+
+
+State 52
+
+   56 asignation: IFR ASSIGN STG . COL
+
+    COL  shift, and go to state 122
+
+
+State 53
+
+   59 asignation: IFR ASSIGN FLT . COL
+   90 operation_float_exp: FLT . PLUS FLT
+   91                    | FLT . MINUS FLT
+   92                    | FLT . MULT FLT
+   93                    | FLT . DIV FLT
+   94                    | FLT . MOD FLT
+   95                    | FLT . FLT PLUS
+   96                    | FLT . FLT MINUS
+   97                    | FLT . FLT MULT
+   98                    | FLT . FLT MOD
+   99                    | FLT . FLT DIV
+
+    FLT    shift, and go to state 123
+    PLUS   shift, and go to state 124
+    MINUS  shift, and go to state 125
+    MULT   shift, and go to state 126
+    DIV    shift, and go to state 127
+    MOD    shift, and go to state 128
+    COL    shift, and go to state 129
+
+
+State 54
+
+   60 asignation: IFR ASSIGN TRUE . COL
+
+    COL  shift, and go to state 130
+
+
+State 55
+
+   61 asignation: IFR ASSIGN FALSE . COL
+
+    COL  shift, and go to state 131
+
+
+State 56
+
+   57 asignation: IFR ASSIGN element . COL
+
+    COL  shift, and go to state 132
+
+
+State 57
+
+   62 asignation: IFR ASSIGN operation_int . COL
+   69 operation_int: operation_int . operation_int_exp
+   70              | operation_int . PLUS DIG
+   71              | operation_int . MINUS DIG
+   72              | operation_int . MULT DIG
+   73              | operation_int . DIV DIG
+
+    DIG    shift, and go to state 133
+    PLUS   shift, and go to state 134
+    MINUS  shift, and go to state 135
+    MULT   shift, and go to state 136
+    DIV    shift, and go to state 137
+    COL    shift, and go to state 138
+
+    operation_int_exp  go to state 139
+
+
+State 58
+
+   68 operation_int: operation_int_exp .
+
+    $default  reduce using rule 68 (operation_int)
+
+
+State 59
+
+   63 asignation: IFR ASSIGN operation_float . COL
+   85 operation_float: operation_float . operation_float_exp
+   86                | operation_float . PLUS FLT
+   87                | operation_float . MINUS FLT
+   88                | operation_float . MULT FLT
+   89                | operation_float . DIV FLT
+
+    FLT    shift, and go to state 140
+    PLUS   shift, and go to state 141
+    MINUS  shift, and go to state 142
+    MULT   shift, and go to state 143
+    DIV    shift, and go to state 144
+    COL    shift, and go to state 145
+
+    operation_float_exp  go to state 146
+
+
+State 60
+
+   84 operation_float: operation_float_exp .
+
+    $default  reduce using rule 84 (operation_float)
+
+
+State 61
+
+   49 initialization: STR IFR ASSIGN . STG COL
+
+    STG  shift, and go to state 147
+
+
+State 62
+
+   43 declaration: STR IFR COL .
+
+    $default  reduce using rule 43 (declaration)
+
+
+State 63
+
+   50 initialization: INT IFR ASSIGN . DIG COL
+   54               | INT IFR ASSIGN . operation_int COL
+
+    DIG  shift, and go to state 148
+
+    operation_int      go to state 149
+    operation_int_exp  go to state 58
+
+
+State 64
+
+   44 declaration: INT IFR COL .
+
+    $default  reduce using rule 44 (declaration)
+
+
+State 65
+
+   47 declaration: DEC IFR LBRACKET . DIG RBRACKET COL
+   48            | DEC IFR LBRACKET . DIG RBRACKET LBRACKET DIG RBRACKET COL
+
+    DIG  shift, and go to state 150
+
+
+State 66
+
+   51 initialization: DEC IFR ASSIGN . FLT COL
+   55               | DEC IFR ASSIGN . operation_float COL
+
+    FLT  shift, and go to state 151
+
+    operation_float      go to state 152
+    operation_float_exp  go to state 60
+
+
+State 67
+
+   45 declaration: DEC IFR COL .
+
+    $default  reduce using rule 45 (declaration)
+
+
+State 68
+
+   52 initialization: BOOLEAN IFR ASSIGN . TRUE COL
+   53               | BOOLEAN IFR ASSIGN . FALSE COL
+
+    TRUE   shift, and go to state 153
+    FALSE  shift, and go to state 154
+
+
+State 69
+
+   46 declaration: BOOLEAN IFR COL .
+
+    $default  reduce using rule 46 (declaration)
+
+
+State 70
+
+   49 initialization: STR . IFR ASSIGN STG COL
+
+    IFR  shift, and go to state 155
+
+
+State 71
+
+   50 initialization: INT . IFR ASSIGN DIG COL
+   54               | INT . IFR ASSIGN operation_int COL
+
+    IFR  shift, and go to state 156
+
+
+State 72
+
+   51 initialization: DEC . IFR ASSIGN FLT COL
+   55               | DEC . IFR ASSIGN operation_float COL
+
+    IFR  shift, and go to state 157
+
+
+State 73
+
+   52 initialization: BOOLEAN . IFR ASSIGN TRUE COL
+   53               | BOOLEAN . IFR ASSIGN FALSE COL
+
+    IFR  shift, and go to state 158
+
+
+State 74
+
+  130 body_stmt: RET . value COL
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 159
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 75
+
+  131 body_stmt: KAERB . COL
+
+    COL  shift, and go to state 160
+
+
+State 76
+
+  139 body_stmt: initialization .
+
+    $default  reduce using rule 139 (body_stmt)
+
+
+State 77
+
+  127 body: LBRACE bodies . RBRACE
+
+    RBRACE  shift, and go to state 161
+
+
+State 78
+
+  128 bodies: body_stmt . bodies
+  129       | body_stmt .
+
+    STR       shift, and go to state 70
+    INT       shift, and go to state 71
+    DEC       shift, and go to state 72
+    BOOLEAN   shift, and go to state 73
+    DWHILE    shift, and go to state 6
+    WHILE     shift, and go to state 7
+    FOR       shift, and go to state 8
+    TIF       shift, and go to state 9
+    FUNCTION  shift, and go to state 10
+    RET       shift, and go to state 74
+    SWTC      shift, and go to state 11
+    KAERB     shift, and go to state 75
+    YRT       shift, and go to state 12
+
+    $default  reduce using rule 129 (bodies)
+
+    initialization  go to state 76
+    bodies          go to state 162
+    body_stmt       go to state 78
+    if              go to state 79
+    while           go to state 80
+    do-while        go to state 81
+    for             go to state 82
+    switch          go to state 83
+    try-catch       go to state 84
+    function        go to state 85
+
+
+State 79
+
+  132 body_stmt: if .
+
+    $default  reduce using rule 132 (body_stmt)
+
+
+State 80
+
+  133 body_stmt: while .
+
+    $default  reduce using rule 133 (body_stmt)
+
+
+State 81
+
+  134 body_stmt: do-while .
+
+    $default  reduce using rule 134 (body_stmt)
+
+
+State 82
+
+  135 body_stmt: for .
+
+    $default  reduce using rule 135 (body_stmt)
+
+
+State 83
+
+  136 body_stmt: switch .
+
+    $default  reduce using rule 136 (body_stmt)
+
+
+State 84
+
+  137 body_stmt: try-catch .
+
+    $default  reduce using rule 137 (body_stmt)
+
+
+State 85
+
+  138 body_stmt: function .
+
+    $default  reduce using rule 138 (body_stmt)
+
+
+State 86
+
+  148 do-while: DWHILE body while .
+
+    $default  reduce using rule 148 (do-while)
+
+
+State 87
+
+   21 value: DIG .
+
+    $default  reduce using rule 21 (value)
+
+
+State 88
+
+   31 element: IFR . LBRACKET DIG RBRACKET
+   32        | IFR . LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET
+  108 condition: IFR . EQ value
+  109          | IFR . EQ IFR
+  110          | IFR . LT value
+  111          | IFR . GT value
+  112          | IFR . LEQ value
+  113          | IFR . GEQ value
+  114          | IFR . LT IFR
+  115          | IFR . GT IFR
+  116          | IFR . LEQ IFR
+  117          | IFR . GEQ IFR
+
+    LBRACKET  shift, and go to state 121
+    EQ        shift, and go to state 163
+    LT        shift, and go to state 164
+    GT        shift, and go to state 165
+    LEQ       shift, and go to state 166
+    GEQ       shift, and go to state 167
+
+
+State 89
+
+   22 value: FLT .
+
+    $default  reduce using rule 22 (value)
+
+
+State 90
+
+   33 reduction: SUM . LPAREN IFR RPAREN
+   37          | SUM . LPAREN IFR LBRACKET DIG RBRACKET RPAREN
+
+    LPAREN  shift, and go to state 168
+
+
+State 91
+
+   34 reduction: PROD . LPAREN IFR RPAREN
+   38          | PROD . LPAREN IFR LBRACKET DIG RBRACKET RPAREN
+
+    LPAREN  shift, and go to state 169
+
+
+State 92
+
+   35 reduction: MAX . LPAREN IFR RPAREN
+   39          | MAX . LPAREN IFR LBRACKET DIG RBRACKET RPAREN
+
+    LPAREN  shift, and go to state 170
+
+
+State 93
+
+   36 reduction: MIN . LPAREN IFR RPAREN
+   40          | MIN . LPAREN IFR LBRACKET DIG RBRACKET RPAREN
+
+    LPAREN  shift, and go to state 171
+
+
+State 94
+
+   41 boolean: TRUE .
+
+    $default  reduce using rule 41 (boolean)
+
+
+State 95
+
+   42 boolean: FALSE .
+
+    $default  reduce using rule 42 (boolean)
+
+
+State 96
+
+  120 conditioncomp: NOT . LPAREN condition RPAREN AND condition
+  122              | NOT . LPAREN condition RPAREN OR condition
+
+    LPAREN  shift, and go to state 172
+
+
+State 97
+
+   25 value: LPAREN . value RPAREN
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 173
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 98
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  100 condition: value . EQ value
+  102          | value . DIFF value
+  104          | value . LT value
+  105          | value . GT value
+  106          | value . LEQ value
+  107          | value . GEQ value
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    EQ     shift, and go to state 178
+    DIFF   shift, and go to state 179
+    LT     shift, and go to state 180
+    GT     shift, and go to state 181
+    LEQ    shift, and go to state 182
+    GEQ    shift, and go to state 183
+    MOD    shift, and go to state 184
+
+
+State 99
+
+   24 value: element .
+
+    $default  reduce using rule 24 (value)
+
+
+State 100
+
+   23 value: reduction .
+
+    $default  reduce using rule 23 (value)
+
+
+State 101
+
+  101 condition: boolean . EQ boolean
+  103          | boolean . DIFF boolean
+  146 whilecondition: LPAREN boolean . RPAREN
+
+    EQ      shift, and go to state 185
+    DIFF    shift, and go to state 186
+    RPAREN  shift, and go to state 187
+
+
+State 102
+
+  118 conditioncomp: condition . AND condition
+  119              | condition . OR condition
+  121              | condition . AND NOT LPAREN condition RPAREN
+  123              | condition . OR NOT LPAREN condition RPAREN
+  144 whilecondition: LPAREN condition . RPAREN
+
+    AND     shift, and go to state 188
+    OR      shift, and go to state 189
+    RPAREN  shift, and go to state 190
+
+
+State 103
+
+  145 whilecondition: LPAREN conditioncomp . RPAREN
+
+    RPAREN  shift, and go to state 191
+
+
+State 104
+
+  147 while: WHILE whilecondition body . EWHILE
+
+    EWHILE  shift, and go to state 192
+
+
+State 105
+
+  149 for: FOR LPAREN INT . IFR ASSIGN DIG COL condition COL for_asignation COL RPAREN body EFOR
+
+    IFR  shift, and go to state 193
+
+
+State 106
+
+  150 for: FOR LPAREN DEC . IFR ASSIGN FLT COL condition COL asignation RPAREN LBRACE body RBRACE EFOR
+
+    IFR  shift, and go to state 194
+
+
+State 107
+
+  101 condition: boolean . EQ boolean
+  103          | boolean . DIFF boolean
+  126 ifcondition: LPAREN boolean . RPAREN
+
+    EQ      shift, and go to state 185
+    DIFF    shift, and go to state 186
+    RPAREN  shift, and go to state 195
+
+
+State 108
+
+  118 conditioncomp: condition . AND condition
+  119              | condition . OR condition
+  121              | condition . AND NOT LPAREN condition RPAREN
+  123              | condition . OR NOT LPAREN condition RPAREN
+  124 ifcondition: LPAREN condition . RPAREN
+
+    AND     shift, and go to state 188
+    OR      shift, and go to state 189
+    RPAREN  shift, and go to state 196
+
+
+State 109
+
+  125 ifcondition: LPAREN conditioncomp . RPAREN
+
+    RPAREN  shift, and go to state 197
+
+
+State 110
+
+  142 if: TIF ifcondition body . EIF
+  143   | TIF ifcondition body . EIF ELSE elsebody
+
+    EIF  shift, and go to state 198
+
+
+State 111
+
+  159 function: FUNCTION IFR LPAREN . parameters RPAREN body
+  160         | FUNCTION IFR LPAREN . RPAREN body
+
+    IFR     shift, and go to state 199
+    RPAREN  shift, and go to state 200
+
+    asignation_function  go to state 201
+    parameters           go to state 202
+
+
+State 112
+
+  153 switch: SWTC LPAREN IFR . RPAREN LBRACE cases RBRACE
+
+    RPAREN  shift, and go to state 203
+
+
+State 113
+
+  158 try-catch: YRT body HCTAC . LPAREN IFR RPAREN body
+
+    LPAREN  shift, and go to state 204
+
+
+State 114
+
+   79 operation_int_exp: DIG DIG . PLUS
+   80                  | DIG DIG . MINUS
+   81                  | DIG DIG . MULT
+   82                  | DIG DIG . MOD
+   83                  | DIG DIG . DIV
+
+    PLUS   shift, and go to state 205
+    MINUS  shift, and go to state 206
+    MULT   shift, and go to state 207
+    DIV    shift, and go to state 208
+    MOD    shift, and go to state 209
+
+
+State 115
+
+   74 operation_int_exp: DIG PLUS . DIG
+
+    DIG  shift, and go to state 210
+
+
+State 116
+
+   75 operation_int_exp: DIG MINUS . DIG
+
+    DIG  shift, and go to state 211
+
+
+State 117
+
+   76 operation_int_exp: DIG MULT . DIG
+
+    DIG  shift, and go to state 212
+
+
+State 118
+
+   78 operation_int_exp: DIG DIV . DIG
+
+    DIG  shift, and go to state 213
+
+
+State 119
+
+   77 operation_int_exp: DIG MOD . DIG
+
+    DIG  shift, and go to state 214
+
+
+State 120
+
+   58 asignation: IFR ASSIGN DIG COL .
+
+    $default  reduce using rule 58 (asignation)
+
+
+State 121
+
+   31 element: IFR LBRACKET . DIG RBRACKET
+   32        | IFR LBRACKET . DIG RBRACKET LBRACKET DIG RBRACKET
+
+    DIG  shift, and go to state 215
+
+
+State 122
+
+   56 asignation: IFR ASSIGN STG COL .
+
+    $default  reduce using rule 56 (asignation)
+
+
+State 123
+
+   95 operation_float_exp: FLT FLT . PLUS
+   96                    | FLT FLT . MINUS
+   97                    | FLT FLT . MULT
+   98                    | FLT FLT . MOD
+   99                    | FLT FLT . DIV
+
+    PLUS   shift, and go to state 216
+    MINUS  shift, and go to state 217
+    MULT   shift, and go to state 218
+    DIV    shift, and go to state 219
+    MOD    shift, and go to state 220
+
+
+State 124
+
+   90 operation_float_exp: FLT PLUS . FLT
+
+    FLT  shift, and go to state 221
+
+
+State 125
+
+   91 operation_float_exp: FLT MINUS . FLT
+
+    FLT  shift, and go to state 222
+
+
+State 126
+
+   92 operation_float_exp: FLT MULT . FLT
+
+    FLT  shift, and go to state 223
+
+
+State 127
+
+   93 operation_float_exp: FLT DIV . FLT
+
+    FLT  shift, and go to state 224
+
+
+State 128
+
+   94 operation_float_exp: FLT MOD . FLT
+
+    FLT  shift, and go to state 225
+
+
+State 129
+
+   59 asignation: IFR ASSIGN FLT COL .
+
+    $default  reduce using rule 59 (asignation)
+
+
+State 130
+
+   60 asignation: IFR ASSIGN TRUE COL .
+
+    $default  reduce using rule 60 (asignation)
+
+
+State 131
+
+   61 asignation: IFR ASSIGN FALSE COL .
+
+    $default  reduce using rule 61 (asignation)
+
+
+State 132
+
+   57 asignation: IFR ASSIGN element COL .
+
+    $default  reduce using rule 57 (asignation)
+
+
+State 133
+
+   74 operation_int_exp: DIG . PLUS DIG
+   75                  | DIG . MINUS DIG
+   76                  | DIG . MULT DIG
+   77                  | DIG . MOD DIG
+   78                  | DIG . DIV DIG
+   79                  | DIG . DIG PLUS
+   80                  | DIG . DIG MINUS
+   81                  | DIG . DIG MULT
+   82                  | DIG . DIG MOD
+   83                  | DIG . DIG DIV
+
+    DIG    shift, and go to state 114
+    PLUS   shift, and go to state 115
+    MINUS  shift, and go to state 116
+    MULT   shift, and go to state 117
+    DIV    shift, and go to state 118
+    MOD    shift, and go to state 119
+
+
+State 134
+
+   70 operation_int: operation_int PLUS . DIG
+
+    DIG  shift, and go to state 226
+
+
+State 135
+
+   71 operation_int: operation_int MINUS . DIG
+
+    DIG  shift, and go to state 227
+
+
+State 136
+
+   72 operation_int: operation_int MULT . DIG
+
+    DIG  shift, and go to state 228
+
+
+State 137
+
+   73 operation_int: operation_int DIV . DIG
+
+    DIG  shift, and go to state 229
+
+
+State 138
+
+   62 asignation: IFR ASSIGN operation_int COL .
+
+    $default  reduce using rule 62 (asignation)
+
+
+State 139
+
+   69 operation_int: operation_int operation_int_exp .
+
+    $default  reduce using rule 69 (operation_int)
+
+
+State 140
+
+   90 operation_float_exp: FLT . PLUS FLT
+   91                    | FLT . MINUS FLT
+   92                    | FLT . MULT FLT
+   93                    | FLT . DIV FLT
+   94                    | FLT . MOD FLT
+   95                    | FLT . FLT PLUS
+   96                    | FLT . FLT MINUS
+   97                    | FLT . FLT MULT
+   98                    | FLT . FLT MOD
+   99                    | FLT . FLT DIV
+
+    FLT    shift, and go to state 123
+    PLUS   shift, and go to state 124
+    MINUS  shift, and go to state 125
+    MULT   shift, and go to state 126
+    DIV    shift, and go to state 127
+    MOD    shift, and go to state 128
+
+
+State 141
+
+   86 operation_float: operation_float PLUS . FLT
+
+    FLT  shift, and go to state 230
+
+
+State 142
+
+   87 operation_float: operation_float MINUS . FLT
+
+    FLT  shift, and go to state 231
+
+
+State 143
+
+   88 operation_float: operation_float MULT . FLT
+
+    FLT  shift, and go to state 232
+
+
+State 144
+
+   89 operation_float: operation_float DIV . FLT
+
+    FLT  shift, and go to state 233
+
+
+State 145
+
+   63 asignation: IFR ASSIGN operation_float COL .
+
+    $default  reduce using rule 63 (asignation)
+
+
+State 146
+
+   85 operation_float: operation_float operation_float_exp .
+
+    $default  reduce using rule 85 (operation_float)
+
+
+State 147
+
+   49 initialization: STR IFR ASSIGN STG . COL
+
+    COL  shift, and go to state 234
+
+
+State 148
+
+   50 initialization: INT IFR ASSIGN DIG . COL
+   74 operation_int_exp: DIG . PLUS DIG
+   75                  | DIG . MINUS DIG
+   76                  | DIG . MULT DIG
+   77                  | DIG . MOD DIG
+   78                  | DIG . DIV DIG
+   79                  | DIG . DIG PLUS
+   80                  | DIG . DIG MINUS
+   81                  | DIG . DIG MULT
+   82                  | DIG . DIG MOD
+   83                  | DIG . DIG DIV
+
+    DIG    shift, and go to state 114
+    PLUS   shift, and go to state 115
+    MINUS  shift, and go to state 116
+    MULT   shift, and go to state 117
+    DIV    shift, and go to state 118
+    MOD    shift, and go to state 119
+    COL    shift, and go to state 235
+
+
+State 149
+
+   54 initialization: INT IFR ASSIGN operation_int . COL
+   69 operation_int: operation_int . operation_int_exp
+   70              | operation_int . PLUS DIG
+   71              | operation_int . MINUS DIG
+   72              | operation_int . MULT DIG
+   73              | operation_int . DIV DIG
+
+    DIG    shift, and go to state 133
+    PLUS   shift, and go to state 134
+    MINUS  shift, and go to state 135
+    MULT   shift, and go to state 136
+    DIV    shift, and go to state 137
+    COL    shift, and go to state 236
+
+    operation_int_exp  go to state 139
+
+
+State 150
+
+   47 declaration: DEC IFR LBRACKET DIG . RBRACKET COL
+   48            | DEC IFR LBRACKET DIG . RBRACKET LBRACKET DIG RBRACKET COL
+
+    RBRACKET  shift, and go to state 237
+
+
+State 151
+
+   51 initialization: DEC IFR ASSIGN FLT . COL
+   90 operation_float_exp: FLT . PLUS FLT
+   91                    | FLT . MINUS FLT
+   92                    | FLT . MULT FLT
+   93                    | FLT . DIV FLT
+   94                    | FLT . MOD FLT
+   95                    | FLT . FLT PLUS
+   96                    | FLT . FLT MINUS
+   97                    | FLT . FLT MULT
+   98                    | FLT . FLT MOD
+   99                    | FLT . FLT DIV
+
+    FLT    shift, and go to state 123
+    PLUS   shift, and go to state 124
+    MINUS  shift, and go to state 125
+    MULT   shift, and go to state 126
+    DIV    shift, and go to state 127
+    MOD    shift, and go to state 128
+    COL    shift, and go to state 238
+
+
+State 152
+
+   55 initialization: DEC IFR ASSIGN operation_float . COL
+   85 operation_float: operation_float . operation_float_exp
+   86                | operation_float . PLUS FLT
+   87                | operation_float . MINUS FLT
+   88                | operation_float . MULT FLT
+   89                | operation_float . DIV FLT
+
+    FLT    shift, and go to state 140
+    PLUS   shift, and go to state 141
+    MINUS  shift, and go to state 142
+    MULT   shift, and go to state 143
+    DIV    shift, and go to state 144
+    COL    shift, and go to state 239
+
+    operation_float_exp  go to state 146
+
+
+State 153
+
+   52 initialization: BOOLEAN IFR ASSIGN TRUE . COL
+
+    COL  shift, and go to state 240
+
+
+State 154
+
+   53 initialization: BOOLEAN IFR ASSIGN FALSE . COL
+
+    COL  shift, and go to state 241
+
+
+State 155
+
+   49 initialization: STR IFR . ASSIGN STG COL
+
+    ASSIGN  shift, and go to state 61
+
+
+State 156
+
+   50 initialization: INT IFR . ASSIGN DIG COL
+   54               | INT IFR . ASSIGN operation_int COL
+
+    ASSIGN  shift, and go to state 63
+
+
+State 157
+
+   51 initialization: DEC IFR . ASSIGN FLT COL
+   55               | DEC IFR . ASSIGN operation_float COL
+
+    ASSIGN  shift, and go to state 66
+
+
+State 158
+
+   52 initialization: BOOLEAN IFR . ASSIGN TRUE COL
+   53               | BOOLEAN IFR . ASSIGN FALSE COL
+
+    ASSIGN  shift, and go to state 68
+
+
+State 159
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  130 body_stmt: RET value . COL
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+    COL    shift, and go to state 242
+
+
+State 160
+
+  131 body_stmt: KAERB COL .
+
+    $default  reduce using rule 131 (body_stmt)
+
+
+State 161
+
+  127 body: LBRACE bodies RBRACE .
+
+    $default  reduce using rule 127 (body)
+
+
+State 162
+
+  128 bodies: body_stmt bodies .
+
+    $default  reduce using rule 128 (bodies)
+
+
+State 163
+
+  108 condition: IFR EQ . value
+  109          | IFR EQ . IFR
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 243
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 244
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 164
+
+  110 condition: IFR LT . value
+  114          | IFR LT . IFR
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 245
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 246
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 165
+
+  111 condition: IFR GT . value
+  115          | IFR GT . IFR
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 247
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 248
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 166
+
+  112 condition: IFR LEQ . value
+  116          | IFR LEQ . IFR
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 249
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 250
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 167
+
+  113 condition: IFR GEQ . value
+  117          | IFR GEQ . IFR
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 251
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 252
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 168
+
+   33 reduction: SUM LPAREN . IFR RPAREN
+   37          | SUM LPAREN . IFR LBRACKET DIG RBRACKET RPAREN
+
+    IFR  shift, and go to state 253
+
+
+State 169
+
+   34 reduction: PROD LPAREN . IFR RPAREN
+   38          | PROD LPAREN . IFR LBRACKET DIG RBRACKET RPAREN
+
+    IFR  shift, and go to state 254
+
+
+State 170
+
+   35 reduction: MAX LPAREN . IFR RPAREN
+   39          | MAX LPAREN . IFR LBRACKET DIG RBRACKET RPAREN
+
+    IFR  shift, and go to state 255
+
+
+State 171
+
+   36 reduction: MIN LPAREN . IFR RPAREN
+   40          | MIN LPAREN . IFR LBRACKET DIG RBRACKET RPAREN
+
+    IFR  shift, and go to state 256
+
+
+State 172
+
+  120 conditioncomp: NOT LPAREN . condition RPAREN AND condition
+  122              | NOT LPAREN . condition RPAREN OR condition
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 88
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    LPAREN  shift, and go to state 97
+
+    value      go to state 98
+    element    go to state 99
+    reduction  go to state 100
+    boolean    go to state 257
+    condition  go to state 258
+
+
+State 173
+
+   25 value: LPAREN value . RPAREN
+   26      | value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+
+    PLUS    shift, and go to state 174
+    MINUS   shift, and go to state 175
+    MULT    shift, and go to state 176
+    DIV     shift, and go to state 177
+    MOD     shift, and go to state 184
+    RPAREN  shift, and go to state 259
+
+
+State 174
+
+   26 value: value PLUS . value
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 260
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 175
+
+   27 value: value MINUS . value
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 261
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 176
+
+   28 value: value MULT . value
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 262
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 177
+
+   29 value: value DIV . value
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 263
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 178
+
+  100 condition: value EQ . value
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 264
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 179
+
+  102 condition: value DIFF . value
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 265
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 180
+
+  104 condition: value LT . value
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 266
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 181
+
+  105 condition: value GT . value
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 267
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 182
+
+  106 condition: value LEQ . value
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 268
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 183
+
+  107 condition: value GEQ . value
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 269
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 184
+
+   30 value: value MOD . value
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 270
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 185
+
+  101 condition: boolean EQ . boolean
+
+    TRUE   shift, and go to state 94
+    FALSE  shift, and go to state 95
+
+    boolean  go to state 271
+
+
+State 186
+
+  103 condition: boolean DIFF . boolean
+
+    TRUE   shift, and go to state 94
+    FALSE  shift, and go to state 95
+
+    boolean  go to state 272
+
+
+State 187
+
+  146 whilecondition: LPAREN boolean RPAREN .
+
+    $default  reduce using rule 146 (whilecondition)
+
+
+State 188
+
+  118 conditioncomp: condition AND . condition
+  121              | condition AND . NOT LPAREN condition RPAREN
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 88
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    NOT     shift, and go to state 273
+    LPAREN  shift, and go to state 97
+
+    value      go to state 98
+    element    go to state 99
+    reduction  go to state 100
+    boolean    go to state 257
+    condition  go to state 274
+
+
+State 189
+
+  119 conditioncomp: condition OR . condition
+  123              | condition OR . NOT LPAREN condition RPAREN
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 88
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    NOT     shift, and go to state 275
+    LPAREN  shift, and go to state 97
+
+    value      go to state 98
+    element    go to state 99
+    reduction  go to state 100
+    boolean    go to state 257
+    condition  go to state 276
+
+
+State 190
+
+  144 whilecondition: LPAREN condition RPAREN .
+
+    $default  reduce using rule 144 (whilecondition)
+
+
+State 191
+
+  145 whilecondition: LPAREN conditioncomp RPAREN .
+
+    $default  reduce using rule 145 (whilecondition)
+
+
+State 192
+
+  147 while: WHILE whilecondition body EWHILE .
+
+    $default  reduce using rule 147 (while)
+
+
+State 193
+
+  149 for: FOR LPAREN INT IFR . ASSIGN DIG COL condition COL for_asignation COL RPAREN body EFOR
+
+    ASSIGN  shift, and go to state 277
+
+
+State 194
+
+  150 for: FOR LPAREN DEC IFR . ASSIGN FLT COL condition COL asignation RPAREN LBRACE body RBRACE EFOR
+
+    ASSIGN  shift, and go to state 278
+
+
+State 195
+
+  126 ifcondition: LPAREN boolean RPAREN .
+
+    $default  reduce using rule 126 (ifcondition)
+
+
+State 196
+
+  124 ifcondition: LPAREN condition RPAREN .
+
+    $default  reduce using rule 124 (ifcondition)
+
+
+State 197
+
+  125 ifcondition: LPAREN conditioncomp RPAREN .
+
+    $default  reduce using rule 125 (ifcondition)
+
+
+State 198
+
+  142 if: TIF ifcondition body EIF .
+  143   | TIF ifcondition body EIF . ELSE elsebody
+
+    ELSE  shift, and go to state 279
+
+    $default  reduce using rule 142 (if)
+
+
+State 199
+
+   64 asignation_function: IFR . ASSIGN value
+   65                    | IFR . ASSIGN boolean
+   66                    | IFR . ASSIGN operation_int_exp
+   67                    | IFR . ASSIGN operation_float_exp
+  161 parameters: IFR .
+
+    ASSIGN  shift, and go to state 280
+
+    $default  reduce using rule 161 (parameters)
+
+
+State 200
+
+  160 function: FUNCTION IFR LPAREN RPAREN . body
+
+    LBRACE  shift, and go to state 29
+
+    body  go to state 281
+
+
+State 201
+
+  162 parameters: asignation_function .
+
+    $default  reduce using rule 162 (parameters)
+
+
+State 202
+
+  159 function: FUNCTION IFR LPAREN parameters . RPAREN body
+  163 parameters: parameters . COMMA IFR
+  164           | parameters . COMMA asignation_function
+
+    RPAREN  shift, and go to state 282
+    COMMA   shift, and go to state 283
+
+
+State 203
+
+  153 switch: SWTC LPAREN IFR RPAREN . LBRACE cases RBRACE
+
+    LBRACE  shift, and go to state 284
+
+
+State 204
+
+  158 try-catch: YRT body HCTAC LPAREN . IFR RPAREN body
+
+    IFR  shift, and go to state 285
+
+
+State 205
+
+   79 operation_int_exp: DIG DIG PLUS .
+
+    $default  reduce using rule 79 (operation_int_exp)
+
+
+State 206
+
+   80 operation_int_exp: DIG DIG MINUS .
+
+    $default  reduce using rule 80 (operation_int_exp)
+
+
+State 207
+
+   81 operation_int_exp: DIG DIG MULT .
+
+    $default  reduce using rule 81 (operation_int_exp)
+
+
+State 208
+
+   83 operation_int_exp: DIG DIG DIV .
+
+    $default  reduce using rule 83 (operation_int_exp)
+
+
+State 209
+
+   82 operation_int_exp: DIG DIG MOD .
+
+    $default  reduce using rule 82 (operation_int_exp)
+
+
+State 210
+
+   74 operation_int_exp: DIG PLUS DIG .
+
+    $default  reduce using rule 74 (operation_int_exp)
+
+
+State 211
+
+   75 operation_int_exp: DIG MINUS DIG .
+
+    $default  reduce using rule 75 (operation_int_exp)
+
+
+State 212
+
+   76 operation_int_exp: DIG MULT DIG .
+
+    $default  reduce using rule 76 (operation_int_exp)
+
+
+State 213
+
+   78 operation_int_exp: DIG DIV DIG .
+
+    $default  reduce using rule 78 (operation_int_exp)
+
+
+State 214
+
+   77 operation_int_exp: DIG MOD DIG .
+
+    $default  reduce using rule 77 (operation_int_exp)
+
+
+State 215
+
+   31 element: IFR LBRACKET DIG . RBRACKET
+   32        | IFR LBRACKET DIG . RBRACKET LBRACKET DIG RBRACKET
+
+    RBRACKET  shift, and go to state 286
+
+
+State 216
+
+   95 operation_float_exp: FLT FLT PLUS .
+
+    $default  reduce using rule 95 (operation_float_exp)
+
+
+State 217
+
+   96 operation_float_exp: FLT FLT MINUS .
+
+    $default  reduce using rule 96 (operation_float_exp)
+
+
+State 218
+
+   97 operation_float_exp: FLT FLT MULT .
+
+    $default  reduce using rule 97 (operation_float_exp)
+
+
+State 219
+
+   99 operation_float_exp: FLT FLT DIV .
+
+    $default  reduce using rule 99 (operation_float_exp)
+
+
+State 220
+
+   98 operation_float_exp: FLT FLT MOD .
+
+    $default  reduce using rule 98 (operation_float_exp)
+
+
+State 221
+
+   90 operation_float_exp: FLT PLUS FLT .
+
+    $default  reduce using rule 90 (operation_float_exp)
+
+
+State 222
+
+   91 operation_float_exp: FLT MINUS FLT .
+
+    $default  reduce using rule 91 (operation_float_exp)
+
+
+State 223
+
+   92 operation_float_exp: FLT MULT FLT .
+
+    $default  reduce using rule 92 (operation_float_exp)
+
+
+State 224
+
+   93 operation_float_exp: FLT DIV FLT .
+
+    $default  reduce using rule 93 (operation_float_exp)
+
+
+State 225
+
+   94 operation_float_exp: FLT MOD FLT .
+
+    $default  reduce using rule 94 (operation_float_exp)
+
+
+State 226
+
+   70 operation_int: operation_int PLUS DIG .
+
+    $default  reduce using rule 70 (operation_int)
+
+
+State 227
+
+   71 operation_int: operation_int MINUS DIG .
+
+    $default  reduce using rule 71 (operation_int)
+
+
+State 228
+
+   72 operation_int: operation_int MULT DIG .
+
+    $default  reduce using rule 72 (operation_int)
+
+
+State 229
+
+   73 operation_int: operation_int DIV DIG .
+
+    $default  reduce using rule 73 (operation_int)
+
+
+State 230
+
+   86 operation_float: operation_float PLUS FLT .
+
+    $default  reduce using rule 86 (operation_float)
+
+
+State 231
+
+   87 operation_float: operation_float MINUS FLT .
+
+    $default  reduce using rule 87 (operation_float)
+
+
+State 232
+
+   88 operation_float: operation_float MULT FLT .
+
+    $default  reduce using rule 88 (operation_float)
+
+
+State 233
+
+   89 operation_float: operation_float DIV FLT .
+
+    $default  reduce using rule 89 (operation_float)
+
+
+State 234
+
+   49 initialization: STR IFR ASSIGN STG COL .
+
+    $default  reduce using rule 49 (initialization)
+
+
+State 235
+
+   50 initialization: INT IFR ASSIGN DIG COL .
+
+    $default  reduce using rule 50 (initialization)
+
+
+State 236
+
+   54 initialization: INT IFR ASSIGN operation_int COL .
+
+    $default  reduce using rule 54 (initialization)
+
+
+State 237
+
+   47 declaration: DEC IFR LBRACKET DIG RBRACKET . COL
+   48            | DEC IFR LBRACKET DIG RBRACKET . LBRACKET DIG RBRACKET COL
+
+    LBRACKET  shift, and go to state 287
+    COL       shift, and go to state 288
+
+
+State 238
+
+   51 initialization: DEC IFR ASSIGN FLT COL .
+
+    $default  reduce using rule 51 (initialization)
+
+
+State 239
+
+   55 initialization: DEC IFR ASSIGN operation_float COL .
+
+    $default  reduce using rule 55 (initialization)
+
+
+State 240
+
+   52 initialization: BOOLEAN IFR ASSIGN TRUE COL .
+
+    $default  reduce using rule 52 (initialization)
+
+
+State 241
+
+   53 initialization: BOOLEAN IFR ASSIGN FALSE COL .
+
+    $default  reduce using rule 53 (initialization)
+
+
+State 242
+
+  130 body_stmt: RET value COL .
+
+    $default  reduce using rule 130 (body_stmt)
+
+
+State 243
+
+   31 element: IFR . LBRACKET DIG RBRACKET
+   32        | IFR . LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET
+  109 condition: IFR EQ IFR .
+
+    LBRACKET  shift, and go to state 121
+
+    $default  reduce using rule 109 (condition)
+
+
+State 244
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  108 condition: IFR EQ value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 108 (condition)
+
+
+State 245
+
+   31 element: IFR . LBRACKET DIG RBRACKET
+   32        | IFR . LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET
+  114 condition: IFR LT IFR .
+
+    LBRACKET  shift, and go to state 121
+
+    $default  reduce using rule 114 (condition)
+
+
+State 246
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  110 condition: IFR LT value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 110 (condition)
+
+
+State 247
+
+   31 element: IFR . LBRACKET DIG RBRACKET
+   32        | IFR . LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET
+  115 condition: IFR GT IFR .
+
+    LBRACKET  shift, and go to state 121
+
+    $default  reduce using rule 115 (condition)
+
+
+State 248
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  111 condition: IFR GT value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 111 (condition)
+
+
+State 249
+
+   31 element: IFR . LBRACKET DIG RBRACKET
+   32        | IFR . LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET
+  116 condition: IFR LEQ IFR .
+
+    LBRACKET  shift, and go to state 121
+
+    $default  reduce using rule 116 (condition)
+
+
+State 250
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  112 condition: IFR LEQ value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 112 (condition)
+
+
+State 251
+
+   31 element: IFR . LBRACKET DIG RBRACKET
+   32        | IFR . LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET
+  117 condition: IFR GEQ IFR .
+
+    LBRACKET  shift, and go to state 121
+
+    $default  reduce using rule 117 (condition)
+
+
+State 252
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  113 condition: IFR GEQ value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 113 (condition)
+
+
+State 253
+
+   33 reduction: SUM LPAREN IFR . RPAREN
+   37          | SUM LPAREN IFR . LBRACKET DIG RBRACKET RPAREN
+
+    LBRACKET  shift, and go to state 289
+    RPAREN    shift, and go to state 290
+
+
+State 254
+
+   34 reduction: PROD LPAREN IFR . RPAREN
+   38          | PROD LPAREN IFR . LBRACKET DIG RBRACKET RPAREN
+
+    LBRACKET  shift, and go to state 291
+    RPAREN    shift, and go to state 292
+
+
+State 255
+
+   35 reduction: MAX LPAREN IFR . RPAREN
+   39          | MAX LPAREN IFR . LBRACKET DIG RBRACKET RPAREN
+
+    LBRACKET  shift, and go to state 293
+    RPAREN    shift, and go to state 294
+
+
+State 256
+
+   36 reduction: MIN LPAREN IFR . RPAREN
+   40          | MIN LPAREN IFR . LBRACKET DIG RBRACKET RPAREN
+
+    LBRACKET  shift, and go to state 295
+    RPAREN    shift, and go to state 296
+
+
+State 257
+
+  101 condition: boolean . EQ boolean
+  103          | boolean . DIFF boolean
+
+    EQ    shift, and go to state 185
+    DIFF  shift, and go to state 186
+
+
+State 258
+
+  120 conditioncomp: NOT LPAREN condition . RPAREN AND condition
+  122              | NOT LPAREN condition . RPAREN OR condition
+
+    RPAREN  shift, and go to state 297
+
+
+State 259
+
+   25 value: LPAREN value RPAREN .
+
+    $default  reduce using rule 25 (value)
+
+
+State 260
+
+   26 value: value . PLUS value
+   26      | value PLUS value .
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+
+    MULT  shift, and go to state 176
+    DIV   shift, and go to state 177
+    MOD   shift, and go to state 184
+
+    $default  reduce using rule 26 (value)
+
+
+State 261
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   27      | value MINUS value .
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+
+    MULT  shift, and go to state 176
+    DIV   shift, and go to state 177
+    MOD   shift, and go to state 184
+
+    $default  reduce using rule 27 (value)
+
+
+State 262
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   28      | value MULT value .
+   29      | value . DIV value
+   30      | value . MOD value
+
+    $default  reduce using rule 28 (value)
+
+
+State 263
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   29      | value DIV value .
+   30      | value . MOD value
+
+    $default  reduce using rule 29 (value)
+
+
+State 264
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  100 condition: value EQ value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 100 (condition)
+
+
+State 265
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  102 condition: value DIFF value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 102 (condition)
+
+
+State 266
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  104 condition: value LT value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 104 (condition)
+
+
+State 267
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  105 condition: value GT value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 105 (condition)
+
+
+State 268
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  106 condition: value LEQ value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 106 (condition)
+
+
+State 269
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  107 condition: value GEQ value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 107 (condition)
+
+
+State 270
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+   30      | value MOD value .
+
+    $default  reduce using rule 30 (value)
+
+
+State 271
+
+  101 condition: boolean EQ boolean .
+
+    $default  reduce using rule 101 (condition)
+
+
+State 272
+
+  103 condition: boolean DIFF boolean .
+
+    $default  reduce using rule 103 (condition)
+
+
+State 273
+
+  121 conditioncomp: condition AND NOT . LPAREN condition RPAREN
+
+    LPAREN  shift, and go to state 298
+
+
+State 274
+
+  118 conditioncomp: condition AND condition .
+
+    $default  reduce using rule 118 (conditioncomp)
+
+
+State 275
+
+  123 conditioncomp: condition OR NOT . LPAREN condition RPAREN
+
+    LPAREN  shift, and go to state 299
+
+
+State 276
+
+  119 conditioncomp: condition OR condition .
+
+    $default  reduce using rule 119 (conditioncomp)
+
+
+State 277
+
+  149 for: FOR LPAREN INT IFR ASSIGN . DIG COL condition COL for_asignation COL RPAREN body EFOR
+
+    DIG  shift, and go to state 300
+
+
+State 278
+
+  150 for: FOR LPAREN DEC IFR ASSIGN . FLT COL condition COL asignation RPAREN LBRACE body RBRACE EFOR
+
+    FLT  shift, and go to state 301
+
+
+State 279
+
+  143 if: TIF ifcondition body EIF ELSE . elsebody
+
+    LBRACE  shift, and go to state 302
+
+    elsebody  go to state 303
+
+
+State 280
+
+   64 asignation_function: IFR ASSIGN . value
+   65                    | IFR ASSIGN . boolean
+   66                    | IFR ASSIGN . operation_int_exp
+   67                    | IFR ASSIGN . operation_float_exp
+
+    DIG     shift, and go to state 304
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 305
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    LPAREN  shift, and go to state 97
+
+    value                go to state 306
+    element              go to state 99
+    reduction            go to state 100
+    boolean              go to state 307
+    operation_int_exp    go to state 308
+    operation_float_exp  go to state 309
+
+
+State 281
+
+  160 function: FUNCTION IFR LPAREN RPAREN body .
+
+    $default  reduce using rule 160 (function)
+
+
+State 282
+
+  159 function: FUNCTION IFR LPAREN parameters RPAREN . body
+
+    LBRACE  shift, and go to state 29
+
+    body  go to state 310
+
+
+State 283
+
+  163 parameters: parameters COMMA . IFR
+  164           | parameters COMMA . asignation_function
+
+    IFR  shift, and go to state 311
+
+    asignation_function  go to state 312
+
+
+State 284
+
+  153 switch: SWTC LPAREN IFR RPAREN LBRACE . cases RBRACE
+
+    ESAC  shift, and go to state 313
+    DEF   shift, and go to state 314
+
+    cases  go to state 315
+    case   go to state 316
+
+
+State 285
+
+  158 try-catch: YRT body HCTAC LPAREN IFR . RPAREN body
+
+    RPAREN  shift, and go to state 317
+
+
+State 286
+
+   31 element: IFR LBRACKET DIG RBRACKET .
+   32        | IFR LBRACKET DIG RBRACKET . LBRACKET DIG RBRACKET
+
+    LBRACKET  shift, and go to state 318
+
+    $default  reduce using rule 31 (element)
+
+
+State 287
+
+   48 declaration: DEC IFR LBRACKET DIG RBRACKET LBRACKET . DIG RBRACKET COL
+
+    DIG  shift, and go to state 319
+
+
+State 288
+
+   47 declaration: DEC IFR LBRACKET DIG RBRACKET COL .
+
+    $default  reduce using rule 47 (declaration)
+
+
+State 289
+
+   37 reduction: SUM LPAREN IFR LBRACKET . DIG RBRACKET RPAREN
+
+    DIG  shift, and go to state 320
+
+
+State 290
+
+   33 reduction: SUM LPAREN IFR RPAREN .
+
+    $default  reduce using rule 33 (reduction)
+
+
+State 291
+
+   38 reduction: PROD LPAREN IFR LBRACKET . DIG RBRACKET RPAREN
+
+    DIG  shift, and go to state 321
+
+
+State 292
+
+   34 reduction: PROD LPAREN IFR RPAREN .
+
+    $default  reduce using rule 34 (reduction)
+
+
+State 293
+
+   39 reduction: MAX LPAREN IFR LBRACKET . DIG RBRACKET RPAREN
+
+    DIG  shift, and go to state 322
+
+
+State 294
+
+   35 reduction: MAX LPAREN IFR RPAREN .
+
+    $default  reduce using rule 35 (reduction)
+
+
+State 295
+
+   40 reduction: MIN LPAREN IFR LBRACKET . DIG RBRACKET RPAREN
+
+    DIG  shift, and go to state 323
+
+
+State 296
+
+   36 reduction: MIN LPAREN IFR RPAREN .
+
+    $default  reduce using rule 36 (reduction)
+
+
+State 297
+
+  120 conditioncomp: NOT LPAREN condition RPAREN . AND condition
+  122              | NOT LPAREN condition RPAREN . OR condition
+
+    AND  shift, and go to state 324
+    OR   shift, and go to state 325
+
+
+State 298
+
+  121 conditioncomp: condition AND NOT LPAREN . condition RPAREN
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 88
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    LPAREN  shift, and go to state 97
+
+    value      go to state 98
+    element    go to state 99
+    reduction  go to state 100
+    boolean    go to state 257
+    condition  go to state 326
+
+
+State 299
+
+  123 conditioncomp: condition OR NOT LPAREN . condition RPAREN
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 88
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    LPAREN  shift, and go to state 97
+
+    value      go to state 98
+    element    go to state 99
+    reduction  go to state 100
+    boolean    go to state 257
+    condition  go to state 327
+
+
+State 300
+
+  149 for: FOR LPAREN INT IFR ASSIGN DIG . COL condition COL for_asignation COL RPAREN body EFOR
+
+    COL  shift, and go to state 328
+
+
+State 301
+
+  150 for: FOR LPAREN DEC IFR ASSIGN FLT . COL condition COL asignation RPAREN LBRACE body RBRACE EFOR
+
+    COL  shift, and go to state 329
+
+
+State 302
+
+  140 elsebody: LBRACE . RET value COL RBRACE
+  141         | LBRACE . KAERB COL RBRACE
+
+    RET    shift, and go to state 330
+    KAERB  shift, and go to state 331
+
+
+State 303
+
+  143 if: TIF ifcondition body EIF ELSE elsebody .
+
+    $default  reduce using rule 143 (if)
+
+
+State 304
+
+   21 value: DIG .
+   74 operation_int_exp: DIG . PLUS DIG
+   75                  | DIG . MINUS DIG
+   76                  | DIG . MULT DIG
+   77                  | DIG . MOD DIG
+   78                  | DIG . DIV DIG
+   79                  | DIG . DIG PLUS
+   80                  | DIG . DIG MINUS
+   81                  | DIG . DIG MULT
+   82                  | DIG . DIG MOD
+   83                  | DIG . DIG DIV
+
+    DIG    shift, and go to state 114
+    PLUS   shift, and go to state 115
+    MINUS  shift, and go to state 116
+    MULT   shift, and go to state 117
+    DIV    shift, and go to state 118
+    MOD    shift, and go to state 119
+
+    PLUS      [reduce using rule 21 (value)]
+    MINUS     [reduce using rule 21 (value)]
+    MULT      [reduce using rule 21 (value)]
+    DIV       [reduce using rule 21 (value)]
+    MOD       [reduce using rule 21 (value)]
+    $default  reduce using rule 21 (value)
+
+    shift/reduce conflict on token PLUS:
+       21 value: DIG .
+       74 operation_int_exp: DIG . PLUS DIG
+      Example: IFR ASSIGN DIG . PLUS DIG
+      Shift derivation
+        asignation_function
+        `-> 66: IFR ASSIGN operation_int_exp
+                           `-> 74: DIG . PLUS DIG
+      Reduce derivation
+        asignation_function
+        `-> 64: IFR ASSIGN value
+                           `-> 26: value         PLUS value
+                                   `-> 21: DIG .      `-> 21: DIG
+
+    shift/reduce conflict on token MINUS:
+       21 value: DIG .
+       75 operation_int_exp: DIG . MINUS DIG
+      Example: IFR ASSIGN DIG . MINUS DIG
+      Shift derivation
+        asignation_function
+        `-> 66: IFR ASSIGN operation_int_exp
+                           `-> 75: DIG . MINUS DIG
+      Reduce derivation
+        asignation_function
+        `-> 64: IFR ASSIGN value
+                           `-> 27: value         MINUS value
+                                   `-> 21: DIG .       `-> 21: DIG
+
+    shift/reduce conflict on token MULT:
+       21 value: DIG .
+       76 operation_int_exp: DIG . MULT DIG
+      Example: IFR ASSIGN DIG . MULT DIG
+      Shift derivation
+        asignation_function
+        `-> 66: IFR ASSIGN operation_int_exp
+                           `-> 76: DIG . MULT DIG
+      Reduce derivation
+        asignation_function
+        `-> 64: IFR ASSIGN value
+                           `-> 28: value         MULT value
+                                   `-> 21: DIG .      `-> 21: DIG
+
+    shift/reduce conflict on token MOD:
+       21 value: DIG .
+       77 operation_int_exp: DIG . MOD DIG
+      Example: IFR ASSIGN DIG . MOD DIG
+      Shift derivation
+        asignation_function
+        `-> 66: IFR ASSIGN operation_int_exp
+                           `-> 77: DIG . MOD DIG
+      Reduce derivation
+        asignation_function
+        `-> 64: IFR ASSIGN value
+                           `-> 30: value         MOD value
+                                   `-> 21: DIG .     `-> 21: DIG
+
+    shift/reduce conflict on token DIV:
+       21 value: DIG .
+       78 operation_int_exp: DIG . DIV DIG
+      Example: IFR ASSIGN DIG . DIV DIG
+      Shift derivation
+        asignation_function
+        `-> 66: IFR ASSIGN operation_int_exp
+                           `-> 78: DIG . DIV DIG
+      Reduce derivation
+        asignation_function
+        `-> 64: IFR ASSIGN value
+                           `-> 29: value         DIV value
+                                   `-> 21: DIG .     `-> 21: DIG
+
+
+
+State 305
+
+   22 value: FLT .
+   90 operation_float_exp: FLT . PLUS FLT
+   91                    | FLT . MINUS FLT
+   92                    | FLT . MULT FLT
+   93                    | FLT . DIV FLT
+   94                    | FLT . MOD FLT
+   95                    | FLT . FLT PLUS
+   96                    | FLT . FLT MINUS
+   97                    | FLT . FLT MULT
+   98                    | FLT . FLT MOD
+   99                    | FLT . FLT DIV
+
+    FLT    shift, and go to state 123
+    PLUS   shift, and go to state 124
+    MINUS  shift, and go to state 125
+    MULT   shift, and go to state 126
+    DIV    shift, and go to state 127
+    MOD    shift, and go to state 128
+
+    PLUS      [reduce using rule 22 (value)]
+    MINUS     [reduce using rule 22 (value)]
+    MULT      [reduce using rule 22 (value)]
+    DIV       [reduce using rule 22 (value)]
+    MOD       [reduce using rule 22 (value)]
+    $default  reduce using rule 22 (value)
+
+    shift/reduce conflict on token PLUS:
+       22 value: FLT .
+       90 operation_float_exp: FLT . PLUS FLT
+      Example: IFR ASSIGN FLT . PLUS FLT
+      Shift derivation
+        asignation_function
+        `-> 67: IFR ASSIGN operation_float_exp
+                           `-> 90: FLT . PLUS FLT
+      Reduce derivation
+        asignation_function
+        `-> 64: IFR ASSIGN value
+                           `-> 26: value         PLUS value
+                                   `-> 22: FLT .      `-> 22: FLT
+
+    shift/reduce conflict on token MINUS:
+       22 value: FLT .
+       91 operation_float_exp: FLT . MINUS FLT
+      Example: IFR ASSIGN FLT . MINUS FLT
+      Shift derivation
+        asignation_function
+        `-> 67: IFR ASSIGN operation_float_exp
+                           `-> 91: FLT . MINUS FLT
+      Reduce derivation
+        asignation_function
+        `-> 64: IFR ASSIGN value
+                           `-> 27: value         MINUS value
+                                   `-> 22: FLT .       `-> 22: FLT
+
+    shift/reduce conflict on token MULT:
+       22 value: FLT .
+       92 operation_float_exp: FLT . MULT FLT
+      Example: IFR ASSIGN FLT . MULT FLT
+      Shift derivation
+        asignation_function
+        `-> 67: IFR ASSIGN operation_float_exp
+                           `-> 92: FLT . MULT FLT
+      Reduce derivation
+        asignation_function
+        `-> 64: IFR ASSIGN value
+                           `-> 28: value         MULT value
+                                   `-> 22: FLT .      `-> 22: FLT
+
+    shift/reduce conflict on token DIV:
+       22 value: FLT .
+       93 operation_float_exp: FLT . DIV FLT
+      Example: IFR ASSIGN FLT . DIV FLT
+      Shift derivation
+        asignation_function
+        `-> 67: IFR ASSIGN operation_float_exp
+                           `-> 93: FLT . DIV FLT
+      Reduce derivation
+        asignation_function
+        `-> 64: IFR ASSIGN value
+                           `-> 29: value         DIV value
+                                   `-> 22: FLT .     `-> 22: FLT
+
+    shift/reduce conflict on token MOD:
+       22 value: FLT .
+       94 operation_float_exp: FLT . MOD FLT
+      Example: IFR ASSIGN FLT . MOD FLT
+      Shift derivation
+        asignation_function
+        `-> 67: IFR ASSIGN operation_float_exp
+                           `-> 94: FLT . MOD FLT
+      Reduce derivation
+        asignation_function
+        `-> 64: IFR ASSIGN value
+                           `-> 30: value         MOD value
+                                   `-> 22: FLT .     `-> 22: FLT
+
+
+
+State 306
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+   64 asignation_function: IFR ASSIGN value .
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+
+    $default  reduce using rule 64 (asignation_function)
+
+
+State 307
+
+   65 asignation_function: IFR ASSIGN boolean .
+
+    $default  reduce using rule 65 (asignation_function)
+
+
+State 308
+
+   66 asignation_function: IFR ASSIGN operation_int_exp .
+
+    $default  reduce using rule 66 (asignation_function)
+
+
+State 309
+
+   67 asignation_function: IFR ASSIGN operation_float_exp .
+
+    $default  reduce using rule 67 (asignation_function)
+
+
+State 310
+
+  159 function: FUNCTION IFR LPAREN parameters RPAREN body .
+
+    $default  reduce using rule 159 (function)
+
+
+State 311
+
+   64 asignation_function: IFR . ASSIGN value
+   65                    | IFR . ASSIGN boolean
+   66                    | IFR . ASSIGN operation_int_exp
+   67                    | IFR . ASSIGN operation_float_exp
+  163 parameters: parameters COMMA IFR .
+
+    ASSIGN  shift, and go to state 280
+
+    $default  reduce using rule 163 (parameters)
+
+
+State 312
+
+  164 parameters: parameters COMMA asignation_function .
+
+    $default  reduce using rule 164 (parameters)
+
+
+State 313
+
+  156 case: ESAC . value COLON body KAERB COL
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 332
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 314
+
+  157 case: DEF . COLON body COL
+
+    COLON  shift, and go to state 333
+
+
+State 315
+
+  153 switch: SWTC LPAREN IFR RPAREN LBRACE cases . RBRACE
+  155 cases: cases . case
+
+    ESAC    shift, and go to state 313
+    DEF     shift, and go to state 314
+    RBRACE  shift, and go to state 334
+
+    case  go to state 335
+
+
+State 316
+
+  154 cases: case .
+
+    $default  reduce using rule 154 (cases)
+
+
+State 317
+
+  158 try-catch: YRT body HCTAC LPAREN IFR RPAREN . body
+
+    LBRACE  shift, and go to state 29
+
+    body  go to state 336
+
+
+State 318
+
+   32 element: IFR LBRACKET DIG RBRACKET LBRACKET . DIG RBRACKET
+
+    DIG  shift, and go to state 337
+
+
+State 319
+
+   48 declaration: DEC IFR LBRACKET DIG RBRACKET LBRACKET DIG . RBRACKET COL
+
+    RBRACKET  shift, and go to state 338
+
+
+State 320
+
+   37 reduction: SUM LPAREN IFR LBRACKET DIG . RBRACKET RPAREN
+
+    RBRACKET  shift, and go to state 339
+
+
+State 321
+
+   38 reduction: PROD LPAREN IFR LBRACKET DIG . RBRACKET RPAREN
+
+    RBRACKET  shift, and go to state 340
+
+
+State 322
+
+   39 reduction: MAX LPAREN IFR LBRACKET DIG . RBRACKET RPAREN
+
+    RBRACKET  shift, and go to state 341
+
+
+State 323
+
+   40 reduction: MIN LPAREN IFR LBRACKET DIG . RBRACKET RPAREN
+
+    RBRACKET  shift, and go to state 342
+
+
+State 324
+
+  120 conditioncomp: NOT LPAREN condition RPAREN AND . condition
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 88
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    LPAREN  shift, and go to state 97
+
+    value      go to state 98
+    element    go to state 99
+    reduction  go to state 100
+    boolean    go to state 257
+    condition  go to state 343
+
+
+State 325
+
+  122 conditioncomp: NOT LPAREN condition RPAREN OR . condition
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 88
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    LPAREN  shift, and go to state 97
+
+    value      go to state 98
+    element    go to state 99
+    reduction  go to state 100
+    boolean    go to state 257
+    condition  go to state 344
+
+
+State 326
+
+  121 conditioncomp: condition AND NOT LPAREN condition . RPAREN
+
+    RPAREN  shift, and go to state 345
+
+
+State 327
+
+  123 conditioncomp: condition OR NOT LPAREN condition . RPAREN
+
+    RPAREN  shift, and go to state 346
+
+
+State 328
+
+  149 for: FOR LPAREN INT IFR ASSIGN DIG COL . condition COL for_asignation COL RPAREN body EFOR
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 88
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    LPAREN  shift, and go to state 97
+
+    value      go to state 98
+    element    go to state 99
+    reduction  go to state 100
+    boolean    go to state 257
+    condition  go to state 347
+
+
+State 329
+
+  150 for: FOR LPAREN DEC IFR ASSIGN FLT COL . condition COL asignation RPAREN LBRACE body RBRACE EFOR
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 88
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    TRUE    shift, and go to state 94
+    FALSE   shift, and go to state 95
+    LPAREN  shift, and go to state 97
+
+    value      go to state 98
+    element    go to state 99
+    reduction  go to state 100
+    boolean    go to state 257
+    condition  go to state 348
+
+
+State 330
+
+  140 elsebody: LBRACE RET . value COL RBRACE
+
+    DIG     shift, and go to state 87
+    IFR     shift, and go to state 51
+    FLT     shift, and go to state 89
+    SUM     shift, and go to state 90
+    PROD    shift, and go to state 91
+    MAX     shift, and go to state 92
+    MIN     shift, and go to state 93
+    LPAREN  shift, and go to state 97
+
+    value      go to state 349
+    element    go to state 99
+    reduction  go to state 100
+
+
+State 331
+
+  141 elsebody: LBRACE KAERB . COL RBRACE
+
+    COL  shift, and go to state 350
+
+
+State 332
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  156 case: ESAC value . COLON body KAERB COL
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+    COLON  shift, and go to state 351
+
+
+State 333
+
+  157 case: DEF COLON . body COL
+
+    LBRACE  shift, and go to state 29
+
+    body  go to state 352
+
+
+State 334
+
+  153 switch: SWTC LPAREN IFR RPAREN LBRACE cases RBRACE .
+
+    $default  reduce using rule 153 (switch)
+
+
+State 335
+
+  155 cases: cases case .
+
+    $default  reduce using rule 155 (cases)
+
+
+State 336
+
+  158 try-catch: YRT body HCTAC LPAREN IFR RPAREN body .
+
+    $default  reduce using rule 158 (try-catch)
+
+
+State 337
+
+   32 element: IFR LBRACKET DIG RBRACKET LBRACKET DIG . RBRACKET
+
+    RBRACKET  shift, and go to state 353
+
+
+State 338
+
+   48 declaration: DEC IFR LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET . COL
+
+    COL  shift, and go to state 354
+
+
+State 339
+
+   37 reduction: SUM LPAREN IFR LBRACKET DIG RBRACKET . RPAREN
+
+    RPAREN  shift, and go to state 355
+
+
+State 340
+
+   38 reduction: PROD LPAREN IFR LBRACKET DIG RBRACKET . RPAREN
+
+    RPAREN  shift, and go to state 356
+
+
+State 341
+
+   39 reduction: MAX LPAREN IFR LBRACKET DIG RBRACKET . RPAREN
+
+    RPAREN  shift, and go to state 357
+
+
+State 342
+
+   40 reduction: MIN LPAREN IFR LBRACKET DIG RBRACKET . RPAREN
+
+    RPAREN  shift, and go to state 358
+
+
+State 343
+
+  120 conditioncomp: NOT LPAREN condition RPAREN AND condition .
+
+    $default  reduce using rule 120 (conditioncomp)
+
+
+State 344
+
+  122 conditioncomp: NOT LPAREN condition RPAREN OR condition .
+
+    $default  reduce using rule 122 (conditioncomp)
+
+
+State 345
+
+  121 conditioncomp: condition AND NOT LPAREN condition RPAREN .
+
+    $default  reduce using rule 121 (conditioncomp)
+
+
+State 346
+
+  123 conditioncomp: condition OR NOT LPAREN condition RPAREN .
+
+    $default  reduce using rule 123 (conditioncomp)
+
+
+State 347
+
+  149 for: FOR LPAREN INT IFR ASSIGN DIG COL condition . COL for_asignation COL RPAREN body EFOR
+
+    COL  shift, and go to state 359
+
+
+State 348
+
+  150 for: FOR LPAREN DEC IFR ASSIGN FLT COL condition . COL asignation RPAREN LBRACE body RBRACE EFOR
+
+    COL  shift, and go to state 360
+
+
+State 349
+
+   26 value: value . PLUS value
+   27      | value . MINUS value
+   28      | value . MULT value
+   29      | value . DIV value
+   30      | value . MOD value
+  140 elsebody: LBRACE RET value . COL RBRACE
+
+    PLUS   shift, and go to state 174
+    MINUS  shift, and go to state 175
+    MULT   shift, and go to state 176
+    DIV    shift, and go to state 177
+    MOD    shift, and go to state 184
+    COL    shift, and go to state 361
+
+
+State 350
+
+  141 elsebody: LBRACE KAERB COL . RBRACE
+
+    RBRACE  shift, and go to state 362
+
+
+State 351
+
+  156 case: ESAC value COLON . body KAERB COL
+
+    LBRACE  shift, and go to state 29
+
+    body  go to state 363
+
+
+State 352
+
+  157 case: DEF COLON body . COL
+
+    COL  shift, and go to state 364
+
+
+State 353
+
+   32 element: IFR LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET .
+
+    $default  reduce using rule 32 (element)
+
+
+State 354
+
+   48 declaration: DEC IFR LBRACKET DIG RBRACKET LBRACKET DIG RBRACKET COL .
+
+    $default  reduce using rule 48 (declaration)
+
+
+State 355
+
+   37 reduction: SUM LPAREN IFR LBRACKET DIG RBRACKET RPAREN .
+
+    $default  reduce using rule 37 (reduction)
+
+
+State 356
+
+   38 reduction: PROD LPAREN IFR LBRACKET DIG RBRACKET RPAREN .
+
+    $default  reduce using rule 38 (reduction)
+
+
+State 357
+
+   39 reduction: MAX LPAREN IFR LBRACKET DIG RBRACKET RPAREN .
+
+    $default  reduce using rule 39 (reduction)
+
+
+State 358
+
+   40 reduction: MIN LPAREN IFR LBRACKET DIG RBRACKET RPAREN .
+
+    $default  reduce using rule 40 (reduction)
+
+
+State 359
+
+  149 for: FOR LPAREN INT IFR ASSIGN DIG COL condition COL . for_asignation COL RPAREN body EFOR
+
+    IFR  shift, and go to state 365
+
+    for_asignation  go to state 366
+
+
+State 360
+
+  150 for: FOR LPAREN DEC IFR ASSIGN FLT COL condition COL . asignation RPAREN LBRACE body RBRACE EFOR
+
+    IFR  shift, and go to state 1
+
+    asignation  go to state 367
+
+
+State 361
+
+  140 elsebody: LBRACE RET value COL . RBRACE
+
+    RBRACE  shift, and go to state 368
+
+
+State 362
+
+  141 elsebody: LBRACE KAERB COL RBRACE .
+
+    $default  reduce using rule 141 (elsebody)
+
+
+State 363
+
+  156 case: ESAC value COLON body . KAERB COL
+
+    KAERB  shift, and go to state 369
+
+
+State 364
+
+  157 case: DEF COLON body COL .
+
+    $default  reduce using rule 157 (case)
+
+
+State 365
+
+  151 for_asignation: IFR . PLUS PLUS
+  152               | IFR . MINUS MINUS
+
+    PLUS   shift, and go to state 370
+    MINUS  shift, and go to state 371
+
+
+State 366
+
+  149 for: FOR LPAREN INT IFR ASSIGN DIG COL condition COL for_asignation . COL RPAREN body EFOR
+
+    COL  shift, and go to state 372
+
+
+State 367
+
+  150 for: FOR LPAREN DEC IFR ASSIGN FLT COL condition COL asignation . RPAREN LBRACE body RBRACE EFOR
+
+    RPAREN  shift, and go to state 373
+
+
+State 368
+
+  140 elsebody: LBRACE RET value COL RBRACE .
+
+    $default  reduce using rule 140 (elsebody)
+
+
+State 369
+
+  156 case: ESAC value COLON body KAERB . COL
+
+    COL  shift, and go to state 374
+
+
+State 370
+
+  151 for_asignation: IFR PLUS . PLUS
+
+    PLUS  shift, and go to state 375
+
+
+State 371
+
+  152 for_asignation: IFR MINUS . MINUS
+
+    MINUS  shift, and go to state 376
+
+
+State 372
+
+  149 for: FOR LPAREN INT IFR ASSIGN DIG COL condition COL for_asignation COL . RPAREN body EFOR
+
+    RPAREN  shift, and go to state 377
+
+
+State 373
+
+  150 for: FOR LPAREN DEC IFR ASSIGN FLT COL condition COL asignation RPAREN . LBRACE body RBRACE EFOR
+
+    LBRACE  shift, and go to state 378
+
+
+State 374
+
+  156 case: ESAC value COLON body KAERB COL .
+
+    $default  reduce using rule 156 (case)
+
+
+State 375
+
+  151 for_asignation: IFR PLUS PLUS .
+
+    $default  reduce using rule 151 (for_asignation)
+
+
+State 376
+
+  152 for_asignation: IFR MINUS MINUS .
+
+    $default  reduce using rule 152 (for_asignation)
+
+
+State 377
+
+  149 for: FOR LPAREN INT IFR ASSIGN DIG COL condition COL for_asignation COL RPAREN . body EFOR
+
+    LBRACE  shift, and go to state 29
+
+    body  go to state 379
+
+
+State 378
+
+  150 for: FOR LPAREN DEC IFR ASSIGN FLT COL condition COL asignation RPAREN LBRACE . body RBRACE EFOR
+
+    LBRACE  shift, and go to state 29
+
+    body  go to state 380
+
+
+State 379
+
+  149 for: FOR LPAREN INT IFR ASSIGN DIG COL condition COL for_asignation COL RPAREN body . EFOR
+
+    EFOR  shift, and go to state 381
+
+
+State 380
+
+  150 for: FOR LPAREN DEC IFR ASSIGN FLT COL condition COL asignation RPAREN LBRACE body . RBRACE EFOR
+
+    RBRACE  shift, and go to state 382
+
+
+State 381
+
+  149 for: FOR LPAREN INT IFR ASSIGN DIG COL condition COL for_asignation COL RPAREN body EFOR .
+
+    $default  reduce using rule 149 (for)
+
+
+State 382
+
+  150 for: FOR LPAREN DEC IFR ASSIGN FLT COL condition COL asignation RPAREN LBRACE body RBRACE . EFOR
+
+    EFOR  shift, and go to state 383
+
+
+State 383
+
+  150 for: FOR LPAREN DEC IFR ASSIGN FLT COL condition COL asignation RPAREN LBRACE body RBRACE EFOR .
+
+    $default  reduce using rule 150 (for)

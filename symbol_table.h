@@ -1,56 +1,31 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
-#define MAXIMUN_TOKKENS_NUM 500
-#define MAX_SCOPES 100
-#define MAX_SYMBOLS_PER_SCOPE 100
 
-typedef enum { IN, FL, ST, BO, FN, VEC_INT, VEC_FL, VEC_ST, VEC_BO, MAT_INT, MAT_FL, MAT_ST, MAT_BO } DataType;
+typedef enum { IN, FL, ST, BO, FN } DataType;
+
+#define MAX_SYMBOLS 500
 
 typedef struct {
     char *name;
-    DataType type;
-    int size1; // For vectors: length; for matrices: rows
-    int size2; // For matrices: columns; for vectors: 0
+    DataType type;  
     union {
         int intValue;
         float floatValue;
         char *stringValue;
-        int boolValue;
+        int boolValue;  
         char *fnValue;
-        int *vecInt;
-        float *vecFloat;
-        char **vecString;
-        int *vecBool;
-        int **matInt;
-        float **matFloat;
-        char ***matString;
-        int **matBool;
     } value;
 } Symbol;
 
-typedef struct {
-    Symbol symbols[MAX_SYMBOLS_PER_SCOPE];
-    int count;
-} Scope;
-
-extern Scope scopes[MAX_SCOPES];
-extern int currentScope;
-
-extern Symbol symbolTable[MAXIMUN_TOKKENS_NUM];
+extern Symbol symbolTable[MAX_SYMBOLS];
 extern int symbolCount;
 
-void enterScope();
-void exitScope();
-void newSymbolToTable(char *name, DataType type);
-void *getVal(char *name, DataType *type);
-void setintValue(char *name, int value);
-void setfloatValue(char *name, float value);
+void addSymbol(char *name, DataType type);
+void *getSymbolValue(char *name, DataType *type);
+void setIntValue(char *name, int value);
+void setFloatValue(char *name, float value);
 void setStringValue(char *name, char *value);
 void setFnValue(char *name, char *value);
 void setBooleanValue(char *name, int value);
-int sumVectorInt(char *name);
-int prodVectorInt(char *name);
-int maxVectorInt(char *name);
-int minVectorInt(char *name);
 
-#endif
+#endif // SYMBOL_TABLE_H

@@ -1,0 +1,9 @@
+services:
+  contenedor:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: contenedor
+    volumes:
+      - ./:/app
+    tty: true
