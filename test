@@ -1,97 +1,179 @@
-ent x*
-dec y*
-bin flag*
-word nombre*
-ent v[5]*
-dec m[2][3]*
+ent variable1*
+ent enteroUno*
+dec flotante*
+bin boleanoD1*
+variable1 = 3*
+enteroUno = -3 + 3 @ 5 % 5*
+flotante = 9.2*
+word cadena = 'hola'*
+ent numero = 564565*
+dec float = 35.892*
+ent suma = 3 + 3*
+ent resta = -3 - 2*
+ent multiplica = 3 @ 8*
+ent divi = 3 / 3*
+ent mod = 9 % 20*
+ent a = 3 + 3*
+ent b = -3 - 3*
+ent c = -3 @ 3*
+ent d = -3 / 3*
+ent e = -3 % 3*
+ent f = -3 + 3 @ 5 % 5*
+ent g = -3 + 3 @ 5 % 5*
+ent h = 3 + 3 / 6 @ 5*
+dec i = 3.0 + 3.0*
+dec j = -3.0 - 3.9*
+dec k = -3.885 @ 3.2454*
+dec l = -3.28489 / 3.23*
+dec m = -385.656 % 3.5989*
+dec n = 3.1 + 3.8 @ 6.9 @ 5.5*
+dec o = -3.8 + 3.72 @ 5.12 % 55465.2*
+dec p = 3.782 + 3.545 / 65995.42 @ 5.254*
 
-x = 10*
-y = 3.14*
-flag = fact*
-nombre = 'Ana'*
+fi (4 >= 1 || !(1 <= 1)) {
+    assert 2*
+} fin*
 
-x = x + 5 * 2 - 3 / 1*
-
-ent suma*
-ent maximo*
-suma = sum(v)*
-maximo = max(v)*
-
-dec sumaFila*
-sumaFila = sum(m[1])*
-
-ent z*
-z = 1*
-if (z == 1) {
-    ent z*
-    z = 99*
-    ret z*
+fi (4 == 1 && !(1 != 1)) {
+    assert 2*
+} fin other {
+    jump*
 }
-ret z*
 
-while (x < 20) {
-    x = x + 1*
+fi (4 > 1) {
+    fi (1 < 4) {
+        assert 2*
+        assert 3*
+    } fin other {
+        assert 2*
+    }
+} fin other {
+    assert 5*
 }
+
+fi (fact) {
+    assert 2*
+} fin*
+
+range (4 == 5 && 5 < 3) {
+    range(4 == 4){
+        assert 5*
+    } done
+} done*
+
+range (4 == 5 || 5 < 3) {
+    range(4 != 4){
+        fi (fact) { assert 2* } fin*
+        assert 5*
+    } done
+} done*
 
 make {
-    y = y + 1*
-} loop (y < 10) {
-    y = y + 2*
-} end-loop
+    fi (4 >= 1 || !(1 <= 1)) { assert 2* } fin*
+    fi (4 == 1 && !(1 != 1)) { assert 2* } fin other { jump* }
+} range (4 == 5 || 5 < 3) {
+    range(4 != 4){
+        fi (fact) { assert 2* } fin*
+        assert 5*
+    } done
+} done*
 
-for (ent i = 0* i < 3* i++) {
-    x = x + i*
-}
+range (ent i = 1* i < 5* i++*) {
+    range (ent j = 2* j > 3* j--*) {
+        range (4 == 5 || 5 < 3) {
+            range(4 != 4){
+                fi (fact) { assert 2* } fin*
+                assert 5*
+            } done
+        } done
+    } done
+} done*
 
-function factorial(ent n) {
-    if (n <= 1) {
-        ret 1*
+hctiw (i){
+    esac 1: {
+        hctiw (j){
+            esac 2:{
+                assert 1*
+            }
+            jump*
+        }
     }
-    else {
-        ret n * factorial(n - 1)*
-    }
+    jump*
 }
-ent resultado*
-resultado = factorial(5)*
 
-function suma(ent a, ent b) {
-    ret a + b*
+hctiw (i){
+    esac 1: {
+        hctiw (j){
+            esac 2:{
+                range (4 == 5 && 5 < 3) {
+                    range(4 == 4){
+                        assert 5*
+                    } done
+                } done
+                ent suma3 = 3 + 3*
+            }
+            jump*
+        }
+    }
+    jump*
 }
-function suma(dec a, dec b) {
-    ret a + b*
-}
-ent r1*
-dec r2*
-r1 = suma(2, 3)*
-r2 = suma(2.5, 3.5)*
 
 yrt {
-    ent w*
-    w = 1 / 0*
-} hctac {
-    ret 'Error: división por cero'*
-}
-
-assert(x > 0)*
-
-ent a*
-a = 'cadena'* // Error de tipo
-
-b = 5* // Error: variable no declarada
-
-ent c*
-c = 1 + * 2 // Error de sintaxis
-
-ent s*
-s = 10*
-{
-    ent s*
-    s = 20*
-    {
-        ent s*
-        s = 30*
-        ret s*
+    yrt {
+        assert 1*
+    } hctac(ex){
+        assert 2*
     }
-    ret s*
+} hctac(error){
+    fi (4 >= 1 || !(1 <= 1)) { assert 2* } fin*    
+    range (4 == 5 && 5 < 3) { range(4 == 4){ assert 5* } done } done
 }
-ret s*
+
+funct hola (i){
+    yrt {
+        yrt {
+            hctiw (i){
+                esac 1: {
+                    hctiw (j){
+                        esac 2:{
+                            range (4 == 5 && 5 < 3) { range(4 == 4){ assert 5* } done } done
+                            ent suma4 = 3 + 3*
+                        }
+                        jump*
+                    }
+                }
+                jump*
+            }
+        } hctac(ex){
+            assert 2*
+        }
+        yrt {
+            assert 1*
+        } hctac(ex){
+            assert 2*
+        }
+    } hctac(error){
+        fi (4 >= 1 || !(1 <= 1)) { assert 2* } fin*   
+    }
+}
+
+funct adios (){
+    range (4 == 5) { range(4 == 4){ assert 5* } done } done
+    make {
+        fi (4 >= 1 || !(1 <= 1)) { assert 2* } fin*
+        fi (4 == 1 && !(1 != 1)) { assert 2* } fin other { jump* }
+    } range (4 == 5 || 5 < 3) {
+        range(4 != 4){
+            fi (fact) { assert 2* } fin*
+            assert 5*
+        } done
+    } done
+    assert 6*
+}
+
+funct buenas2 (i = 2, a2, a = 'hola'){
+    funct buenas1 (i, a2, a){
+        fi (4 >= 1 || !(1 <= 1)) { assert 2* } fin other { jump* }
+    }
+    assert 6*
+}

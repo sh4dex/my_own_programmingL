@@ -1,4 +1,3 @@
-/** Def section **/
 %{
 #include "compilersintactic.tab.h"
 extern int yylineno;
@@ -11,6 +10,7 @@ float 			-?[0-9]+\.[0-9]+
 string      	\'[^\']*\' 
 
 %%
+"assert" {return ASSERT;}
 "fact"          {return TRUE;}
 "fake"         {return FALSE;}
 "ent"           {return INT;}

@@ -1,6 +1,9 @@
+
 %start program
 
 %{
+//#define YYDEBUG 1
+//int yydebug = 1;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,6 +27,7 @@ void yyerror(char *s);
 %token <strval> STR
 %token <strval> IFR
 %token LBRACKET RBRACKET
+%token ASSERT
 %token BOOLEAN
 %token MAKE LOOP ENDLOOP
 %token TRUE FALSE
@@ -48,7 +52,7 @@ program:
 statement_list:
       /* vacío */
     | statement statement_list
-    ;
+;
 
 statement:
       declaration
@@ -62,34 +66,35 @@ statement:
     | switch
     | try_catch
     | function
-    ;
+    | assert_stmt
+;
 
 value:
       STR
     | INT
     | DEC
     | reduction
-    ;
+;
 
 boolean:
       TRUE
     | FALSE
-    ;
+;
 
 declaration:
       STR IFR COL {newSymbolToTable($2, ST);}
     | INT IFR COL {newSymbolToTable($2, IN);}
     | DEC IFR COL {newSymbolToTable($2, FL);}
     | BOOLEAN IFR COL {newSymbolToTable($2, BO);}
-    | STR IFR LBRACKET INT RBRACKET COL { /* vector string */ }
-    | INT IFR LBRACKET INT RBRACKET COL { /* vector int */ }
-    | DEC IFR LBRACKET INT RBRACKET COL { /* vector float */ }
-    | BOOLEAN IFR LBRACKET INT RBRACKET COL { /* vector bool */ }
-    | STR IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* matriz string */ }
-    | INT IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* matriz int */ }
-    | DEC IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* matriz float */ }
-    | BOOLEAN IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { /* matriz bool */ }
-    ;
+    | STR IFR LBRACKET INT RBRACKET COL { }
+    | INT IFR LBRACKET INT RBRACKET COL { }
+    | DEC IFR LBRACKET INT RBRACKET COL { }
+    | BOOLEAN IFR LBRACKET INT RBRACKET COL { }
+    | STR IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { }
+    | INT IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { }
+    | DEC IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { }
+    | BOOLEAN IFR LBRACKET INT RBRACKET LBRACKET INT RBRACKET COL { }
+;
 
 initialization:
       STR IFR ASSIGN STR COL {newSymbolToTable($2, ST); setStringValue($2, $4);}
@@ -99,7 +104,9 @@ initialization:
     | BOOLEAN IFR ASSIGN FALSE COL {newSymbolToTable($2, BO); setBooleanValue($2, 0);}
     | INT IFR ASSIGN operation_int COL {newSymbolToTable($2, IN); setintValue($2, $4);}
     | DEC IFR ASSIGN operation_float COL {newSymbolToTable($2, FL); setfloatValue($2, $4);}
-    ;
+    | INT IFR ASSIGN reduction COL { newSymbolToTable($2, IN); setintValue($2, $4); }
+;
+
 
 asignation:
       IFR ASSIGN STR COL {setStringValue($1, $3);}
@@ -107,9 +114,10 @@ asignation:
     | IFR ASSIGN DEC COL {setfloatValue($1, $3);}
     | IFR ASSIGN TRUE COL {setBooleanValue($1, 1);}
     | IFR ASSIGN FALSE COL {setBooleanValue($1, 0);}
+    | IFR ASSIGN reduction COL { setintValue($1, $3); }
     | IFR ASSIGN operation_int COL {setintValue($1, $3);}
     | IFR ASSIGN operation_float COL {setfloatValue($1, $3);}
-    ;
+;
 
 operation_int:
       operation_int PLUS operation_int   { $$ = $1 + $3; }
@@ -119,13 +127,13 @@ operation_int:
     | operation_int MOD operation_int    { $$ = $1 % $3; }
     | LPAREN operation_int RPAREN        { $$ = $2; }
     | INT                                { $$ = $1; }
-    | IFR { 
-        DataType t; 
-        int *val = getVal($1, &t); 
-        if (val && t == IN) $$ = *val; 
+    | IFR {
+        DataType t;
+        int *val = getVal($1, &t);
+        if (val && t == IN) $$ = *val;
         else { yyerror("Variable entera no declarada o tipo incorrecto"); $$ = 0; }
       }
-    ;
+;
 
 operation_float:
       operation_float PLUS operation_float   { $$ = $1 + $3; }
@@ -135,24 +143,20 @@ operation_float:
     | operation_float MOD operation_float    { $$ = (int)$1 % (int)$3; }
     | LPAREN operation_float RPAREN         { $$ = $2; }
     | DEC                                   { $$ = $1; }
-    | IFR { 
-        DataType t; 
-        float *val = getVal($1, &t); 
-        if (val && t == FL) $$ = *val; 
+    | IFR {
+        DataType t;
+        float *val = getVal($1, &t);
+        if (val && t == FL) $$ = *val;
         else { yyerror("Variable decimal no declarada o tipo incorrecto"); $$ = 0; }
       }
-    ;
+;
 
 reduction:
       SUM LPAREN IFR RPAREN { $$ = sumVectorInt($3); }
     | PROD LPAREN IFR RPAREN { $$ = prodVectorInt($3); }
     | MAX LPAREN IFR RPAREN { $$ = maxVectorInt($3); }
     | MIN LPAREN IFR RPAREN { $$ = minVectorInt($3); }
-    | SUM LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* suma fila/columna de matriz */ }
-    | PROD LPAREN IFR LBRACKET INT RBRACKET RPAREN  { /* producto fila/columna de matriz */ }
-    | MAX LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* máximo fila/columna de matriz */ }
-    | MIN LPAREN IFR LBRACKET INT RBRACKET RPAREN   { /* mínimo fila/columna de matriz */ }
-    ;
+;
 
 condition:
       value EQ value
@@ -173,36 +177,35 @@ condition:
     | IFR GT IFR
     | IFR LEQ IFR
     | IFR GEQ IFR
-    ;
+;
 
 conditioncomp:
       condition AND condition
     | condition OR condition
-    | NOT LPAREN condition RPAREN AND condition
-    | condition AND NOT LPAREN condition RPAREN
-    | NOT LPAREN condition RPAREN OR condition
-    | condition OR NOT LPAREN condition RPAREN
-    ;
+;
 
 ifcondition:
       LPAREN condition RPAREN
     | LPAREN conditioncomp RPAREN
     | LPAREN boolean RPAREN
-    ;
+;
 
 body:
        LBRACE { enterScope(); }
       bodies
       RBRACE { exitScope(); }
-    ;
+;
 
 bodies:
       /* vacío */
     | body_stmt bodies
-    ;
+;
 
 whileloop:
-    DWHILE body WHILE LPAREN condition RPAREN body EWHILE
+    DWHILE body WHILE LPAREN condition RPAREN LBRACE bodies RBRACE EWHILE
+    {
+        printf("Bucle do-while válido.\n");
+    }
 ;
 
 body_stmt:
@@ -218,71 +221,85 @@ body_stmt:
     | function
     | initialization
     | asignation
-    ;
+;
 
 elsebody:
       LBRACE RET value COL RBRACE
     | LBRACE KAERB COL RBRACE
-    ;
+;
 
-if:
+if: if_stmt | if_else_stmt ;
+
+if_stmt:
       TIF ifcondition body EIF
-    | TIF ifcondition body EIF ELSE elsebody
-    ;
+;
+
+if_else_stmt:
+      TIF ifcondition body EIF ELSE elsebody
+;
+
+assert_stmt:
+      ASSERT LPAREN condition RPAREN COL
+;
 
 whilecondition:
       LPAREN condition RPAREN
     | LPAREN conditioncomp RPAREN
     | LPAREN boolean RPAREN
-    ;
+;
 
 while:
       WHILE whilecondition body EWHILE
-    ;
+;
 
 do_while:
       DWHILE body while
-    ;
+;
 
 for:
       FOR LPAREN INT IFR ASSIGN INT COL condition COL for_asignation COL RPAREN body EFOR
     | FOR LPAREN DEC IFR ASSIGN DEC COL condition COL asignation RPAREN LBRACE body RBRACE EFOR
-    ;
+;
 
 for_asignation:
       IFR PLUS PLUS
     | IFR MINUS MINUS
-    ;
+;
 
 switch:
       SWTC LPAREN IFR RPAREN LBRACE cases RBRACE
-    ;
+;
 
 cases:
       case
     | cases case
-    ;
+;
 
 case:
       ESAC value COL body KAERB COL
     | DEF COL body COL
-    ;
+;
 
 try_catch:
       YRT body HCTAC LPAREN IFR RPAREN body
-    ;
+;
 
 function:
       FUNCTION IFR LPAREN parameters RPAREN body {newSymbolToTable($2, FN); setFnValue($2, $2);}
     | FUNCTION IFR LPAREN RPAREN body {newSymbolToTable($2, FN); setFnValue($2, $2);}
-    ;
+;
 
 parameters:
-      IFR
-    | asignation
-    | parameters COL IFR
-    | parameters COL asignation
-    ;
+      parameter
+    | parameters COL parameter
+;
+
+parameter:
+     INT IFR
+    | DEC IFR
+    | BOOLEAN IFR
+    | STR IFR
+;
 
 %%
 
@@ -291,7 +308,7 @@ void yyerror(char *s) {
 }
 
 int main(int argc, char **argv){
-    printf("Inicio del programa: \n");
+    printf("Running ... : \n");
     if(argc > 1){
         yyin = fopen(argv[1], "rt");
     }else{
